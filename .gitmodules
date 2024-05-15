@@ -10,3 +10,6 @@
 	path = src/pisa
 	url = https://github.com/albertqjiang/Portal-to-ISAbelle.git
 	ignore = dirty
+[submodule "data/benchmarks/FunEq"]
+	path = data/benchmarks/FunEq
+	url = https://github.com/bualimmm/FunEq.git
