@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/data/benchmarks/CompCert" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/data/benchmarks/miniF2F" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/data/benchmarks/miniF2F/_target/deps/mathlib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/data/test/lean_proj/_target/deps/mathlib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lean_test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lean_test/_target/deps/mathlib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/pisa" vcs="Git" />
+  </component>
+</project>

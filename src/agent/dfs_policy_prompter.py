@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import datetime
 import sys
 root_dir = f"{__file__.split('src')[0]}"
 if root_dir not in sys.path:
@@ -52,7 +52,9 @@ class DfsCoqGptPolicyPrompter(PolicyPrompter):
         self.coq_gpt_response_grammar = CoqGPTResponseDfsGrammar()
         conv_messages = self.agent_grammar.get_openai_conv_messages(example_conv_prompt_path, "system")
         main_message = self.agent_grammar.get_openai_main_message(main_sys_prompt_path, "system")
-        self.system_messages = [main_message] + conv_messages
+        # self.system_messages = [main_message] + conv_messages
+        self.system_messages = [main_message]
+
         if not gpt_model_name.startswith("gpt"):
             self._gpt_access = LlamaAccess(gpt_model_name)
         else:
@@ -324,9 +326,22 @@ class DfsCoqGptPolicyPrompter(PolicyPrompter):
         return prompt_message, prompt_token_count, custom_system_messages, custom_system_message_count
 
     def run_prompt(self, request: CoqGptResponse) -> list:
+        # today_date = datetime.datetime.now().date()
+        # debug_dir = os.path.join(root_dir, "debug")
+        # daily_dir = os.path.join(debug_dir, f"{today_date}_prompts")
+        #
+        # # Ensure the directory exists
+        # os.makedirs(daily_dir, exist_ok=True)
+        #
+        # # Prepare the log file
+        # log_file_path = os.path.join(debug_dir, f"{today_date}.txt")
         max_tokens_in_prompt = self._max_token_per_prompt - self.system_token_count - self._max_tokens_per_action
         prompt_message, prompt_token_count, custom_system_msg, custom_system_msg_cnt = self._get_prompt_message(request, max_tokens_in_prompt)
+
         messages, total_token_count = self._constrain_tokens_in_history(prompt_message, custom_system_msg, custom_system_msg_cnt, prompt_token_count, self._max_tokens_per_action)
+        # print(f"Prompt sent to GPT model:\n{messages}\n\n")
+        # with open(log_file_path, "a") as log_file:
+        #     log_file.write(f"Prompt sent to GPT model:\n{messages}\n\n")
         success = False
         retries = 3
         time_to_sleep = 60
@@ -397,9 +412,13 @@ class DfsCoqGptPolicyPrompter(PolicyPrompter):
         if not success and responses == None:
             # Don't throw an error even with an incomplete response, because the parsing can still make it work.
             raise Exception(f"Failed to get valid response after {retries} tries")
+        # with open(log_file_path, "a") as log_file:
+        #     log_file.write(f"Response received from GPT model:\n{responses}\n")
+        # print("DONE")
         return responses
 
     def parse_response(self, responses: list) -> typing.List[typing.Tuple[ProofAction, float]]:
+        # print(f"Response received from GPT model:\n{responses}\n")
         message_contents =  self.agent_grammar.parse_openai_messages(responses, "assistant")
         actions = []
         total = len(message_contents)
@@ -415,14 +434,30 @@ class DfsCoqGptPolicyPrompter(PolicyPrompter):
             if coq_gpt_request.action == CoqGptRequestActions.GET_DFNS_THMS:
                 action = ProofAction(ProofAction.ActionType.GET_DFNS_THMS, self.language)
             elif coq_gpt_request.action == CoqGptRequestActions.RUN_TACTIC:
+                # separated_tactics = []
+                # for item in coq_gpt_request.args:
+                #     separated_tactics.extend(item.split('\n'))
                 action = ProofAction(ProofAction.ActionType.RUN_TACTIC, self.language, tactics=coq_gpt_request.args)
             else:
                 raise Exception(f"Invalid action {coq_gpt_request.action}")
             action.original_message = open_ai_message
             actions.append((action, probability))
+        # print(f"Action taken:\n{actions}\n\n")
         return actions
     
     def __call__(self, tree_search_action: TreeSearchAction) -> ProofAction:
+        # today_date = datetime.datetime.now()
+        # debug_dir = os.path.join(root_dir, "debug")
+        # daily_dir = os.path.join(debug_dir, f"{today_date}_prompts")
+        #
+        # # Ensure the directory exists
+        # os.makedirs(daily_dir, exist_ok=True)
+        #
+        # # Prepare the log file
+        # log_file_path = os.path.join(daily_dir, f"{today_date}.txt")
+
+
+
         state = tree_search_action.state
         assert state is not None
         assert tree_search_action.kwargs is not None and "summary" in tree_search_action.kwargs
@@ -471,6 +506,8 @@ class DfsCoqGptPolicyPrompter(PolicyPrompter):
         tries = 10
         exceptions = []
         incorrect_action_repeat_count = 0
+        # with open(log_file_path, "a") as log_file:
+        #     log_file.write(f"Prompt sent to GPT model:\n{gpt_response}\n\n")
         while not success and tries > 0:
             try:
                 responses = self.run_prompt(gpt_response)
@@ -524,6 +561,10 @@ class DfsCoqGptPolicyPrompter(PolicyPrompter):
         if not success:
             raise Exception(f"Failed to get valid action after {tries} tries. Exceptions:\n {exceptions}")
         action = actions_tuple[0][0]
+        # with open(log_file_path, "a") as log_file:
+        #     log_file.write(f"Response received from GPT model:\n{responses}\n")
+        #     log_file.write(f"Action taken:\n{actions_tuple[0][0]}\n\n")
+        # assert 1==0
         return action
 
     def get_efficiency_info(self) -> typing.Dict[str, typing.Any]:

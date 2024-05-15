@@ -1,0 +1,27 @@
+name: intermediate_funeq
+num_files: 1
+language: LEAN
+few_shot_data_path_for_retrieval:
+few_shot_metadata_filename_for_retrieval:
+dfs_data_path_for_retrieval:
+dfs_metadata_filename_for_retrieval:
+datasets:
+  - project: data/benchmarks/miniF2F
+    files:
+      - path: lean/src/test.lean
+        theorems:
+          - intermediate_funeq_1
+          - intermediate_funeq_2
+          - intermediate_funeq_3
+          - intermediate_funeq_4
+          - intermediate_funeq_5
+          - intermediate_funeq_6
+          - intermediate_funeq_7
+          - intermediate_funeq_8
+          - intermediate_funeq_9
+          - intermediate_funeq_10
+          - intermediate_funeq_11
+          - intermediate_funeq_12
+          - intermediate_funeq_13
+          - intermediate_funeq_14
+          - intermediate_funeq_15
