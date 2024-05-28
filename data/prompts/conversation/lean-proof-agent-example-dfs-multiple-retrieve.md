@@ -9,11 +9,11 @@ y = 1
 [HYPOTHESIS] x y : ℝ
 [HYPOTHESIS] h₁: x = 3 - 2 * y
 [HYPOTHESIS] h₂: 2 * x - y = 1
-
-[INFORMAL-THEOREM]
-At which point do the lines $x=3-2y$ and $2x-y=1$ intersect? Give your answer as an ordered pair in the form $(x, y).$ Show that it is (1,1).
-[INFORMAL-PROOFS]
-We can substitute the second equation into the first equation to get $$x=3-2(2x-1)=3-4x+2.$$ Moving the variable terms to the left-hand side and the constants to the right-hand side, we find $$x+4x=5.$$ This gives $x=1$ which we may plug into either equation to get $y$. For example, $$y=2(1)-1=1.$$ So the lines intersect at the point $(1,1)$.
+[THEOREMS] 1
+[THEOREM] nat.triangle_succ: (n : ℕ) : (n + 1) * ((n + 1) - 1) / 2 = n * (n - 1) / 2 + n
+[THEOREM] inner_product_geometry.mul_norm_eq_abs_sub_sq_norm: {x y z : V}   (h₁ : ∃ k : ℝ, k ≠ 1 ∧ x + y = k • (x - y)) (h₂ : ∥z - y∥ = ∥z + y∥) :   ∥x - y∥ * ∥x + y∥ = |∥z + y∥ ^ 2 - ∥z - x∥ ^ 2|
+[THEOREM] complex.sub_conj: (z : ℂ) : z - conj z = (2 * z.im : ℝ) * I
+[THEOREM] euclidean_geometry.mul_dist_eq_abs_sub_sq_dist: {a b p q : P}   (hp : ∃ k : ℝ, k ≠ 1 ∧ b -ᵥ p = k • (a -ᵥ p)) (hq : dist a q = dist b q) :   dist a p * dist b p = |dist b q ^ 2 - dist p q ^ 2|
 
 [STEPS]
 [STEP] split,
@@ -47,13 +47,12 @@ n = 57
 [HYPOTHESIS] n : ℕ
 [HYPOTHESIS] h₀ : n < 398 
 [HYPOTHESIS] h₁ : (n * 7) % 398 = 1
-
-
-[INFORMAL-THEOREM]
-Show that if $n$ is an integer less than 398, and $7 * n$ modulo 398 is 1, then $n$ must be 57. 
-[INFORMAL-PROOFS]
-Since 7 is coprime to 398, it has a unique inverse modulo 398. One can compute that $57 * 7$ is 1 modulo 398, hence the unique inverse must be 57.
-
+[THEOREMS] 1
+[THEOREM] tactic.is_prime_helper: (n : ℕ)   (h₁ : 1 < n) (h₂ : nat.min_fac n = n) : nat.prime n
+[THEOREM] nat.one_mul: (n : ℕ) : 1 * n = n
+[THEOREM] nat.mul_one:  ∀ (n : ℕ), n * 1 = n
+[THEOREM] nat.lt_trans: {n m k : ℕ} (h₁ : n < m) : m < k → n < k
+[THEOREM] nat.lt_of_le_of_lt: {n m k : ℕ} (h₁ : n ≤ m) : m < k → n < k
 
 [LAST STEP]
 norm_num,
@@ -84,11 +83,12 @@ s 5 = 16
 [HYPOTHESIS] h : ∀ (n : ℕ), s n = s (n + 2) - s (n + 1),
 [HYPOTHESIS] h₃ : s 9 = s 8 + s 7,
 [HYPOTHESIS] h₄ : s 8 = 68
+[THEOREMS] 1
+[THEOREM] nat.triangle_succ: (n : ℕ) : (n + 1) * ((n + 1) - 1) / 2 = n * (n - 1) / 2 + n
+[THEOREM] nat.add_left_cancel:  ∀ {n m k : ℕ}, n + m = n + k → m = k | 0        m k
+[THEOREM] nat.fib_add_two_sub_fib_add_one: {n : ℕ} : fib (n + 2) - fib (n + 1) = fib n
+[THEOREM] nat.add_left_comm:  ∀ (n m k : ℕ), n + (m + k) = m + (n + k)
 
-[INFORMAL-THEOREM]
-The sequence $S_1, S_2, S_3, \\cdots, S_{10}$ has the property that every term beginning with the third is the sum of the previous two.  That is, $S_n = S_{n-2} + S_{n-1} \\text{ for } n \\ge 3. $ Suppose that $S_9 = 110$ and $S_7 = 42$.  What is $S_5$?$ Show that it is $16$.
-[INFORMAL-PROOFS]
-We have $S_9 = 110$, $S_7 = 42$. We have $S_8 = S_9 - S_ 7 = 110 - 42 = 68$. Thus $S_6 = S_8 - S_7 = 68 - 42 = 26$. From this we get $S_5 = S_7 - S_6 = 42 - 26 = 16$. Therefore, the answer is $16$.
 
 [STEP] have h : ∀ n, s n = s (n + 2) - s (n + 1) := by { intro n, simp [h₀ n] }, 
 [STEP] have h₃ : s 9 = s 8 + s 7, from h₀ 7,
@@ -126,9 +126,11 @@ Goals to prove:
 [HYPOTHESIS] id : 3 ∣ d ^ 3 + 2 * d
 [HYPOTHESIS] id_expanded : (d + 1) ^ 3 + 2 * (d + 1) = d ^ 3 + 3 * d ^ 2 + 5 * d + 3
 [HYPOTHESIS] id_factored : d ^ 3 + 3 * d ^ 2 + 5 * d + 3 = d ^ 3 + 2 * d + 3 * (d ^ 2 + d + 1)
-
-[INFORMAL-THEOREM] Show that for any natural number n, 3 divides $n^3 + 2n$.
-[INFORMAL-PROOFS] We induct on $n$. If $n = 0$, then $n^3 + 2n = 0$ which is divisibe by 3. Assume that for a natural number $d$ that 3 divides $d^3 + 2d$. We will show 3 divides $(d+1)^3 + 2(d+1)$. We have $(d+1)^3 + 2(d+1) = d^3 + 3d^2 + 5d + 3 = d^3 + 2d + 3*(d^2 + d + 1)$. Since 3 divides $d^3 + 2d$ by the inductive hypothesis, and clearly 3 divides $3*(d^2 + d + 1)$, we have that 3 divides $(d+1)^3 + 2(d+1)$, and the argument by induction is complete.
+[THEOREMS] 1
+[THEOREM] nat.triangle_succ: (n : ℕ) : (n + 1) * ((n + 1) - 1) / 2 = n * (n - 1) / 2 + n
+[THEOREM] complex.norm_sq_add_mul_I: (x y : ℝ) : norm_sq (x + y * I) = x ^ 2 + y ^ 2
+[THEOREM] nat.prime_three:  prime 3
+[THEOREM] complex.norm_sq_add: (z w : ℂ) : norm_sq (z + w) =   norm_sq z + norm_sq w + 2 * (z * conj w).re
 
 [STEPS]
 [STEP] induction n with d id,
@@ -147,7 +149,6 @@ rw id_factored,
   apply dvd_add id,
 [END]
 
-
 `example_user`
 Goals to prove:
 [GOALS]
@@ -158,9 +159,11 @@ b = -2
 [HYPOTHESIS] f : ℝ → ℝ,
 [HYPOTHESIS] h₀ : ∀ (x : ℝ), f x = 3 * x ^ 4 - 7 * x ^ 3 + 2 * x ^ 2 - b * x + 1,
 [HYPOTHESIS] h₁ : 3 * 1 ^ 4 - 7 * 1 ^ 3 + 2 * 1 ^ 2 - b * 1 + 1 = 1
-
-[INFORMAL-THEOREM] Let $f(x)=3x^4-7x^3+2x^2-bx+1$. For what value of $b$ is $f(1)=1$? Show that it is -2.
-[INFORMAL-PROOF] Evaluating, we get $f(1) = 3-7+2-b+1 = -b-1 = 1.$ Solving for $b,$ we find that $b = -2.$
+[THEOREMS] 1
+[THEOREM] nat.triangle_succ: (n : ℕ) : (n + 1) * ((n + 1) - 1) / 2 = n * (n - 1) / 2 + n
+[THEOREM] inner_product_geometry.mul_norm_eq_abs_sub_sq_norm: {x y z : V}   (h₁ : ∃ k : ℝ, k ≠ 1 ∧ x + y = k • (x - y)) (h₂ : ∥z - y∥ = ∥z + y∥) :   ∥x - y∥ * ∥x + y∥ = |∥z + y∥ ^ 2 - ∥z - x∥ ^ 2|
+[THEOREM] complex.norm_sq_add_mul_I: (x y : ℝ) : norm_sq (x + y * I) = x ^ 2 + y ^ 2
+[THEOREM] complex.sub_conj: (z : ℂ) : z - conj z = (2 * z.im : ℝ) * I
 
 [LAST STEP]
 rw h₀ at h₁,
@@ -171,4 +174,24 @@ rw h₀ at h₁,
 [RUN TACTIC]
 linarith,
 [END]
+
+`example_user`
+Goals to prove:
+[GOALS]
+[GOAL] 1
+a + b = b + a
+[HYPOTHESES] 1
+[HYPOTHESIS] a b : ℕ
+[THEOREMS] 1
+[THEOREM] nat.add_right_comm:  ∀ (n m k : ℕ), n + m + k = n + k + m
+[THEOREM] nat.add_assoc:  ∀ n m k : ℕ, (n + m) + k = n + (m + k) | n m 0
+[THEOREM] pnat.add_coe: (m n : ℕ+) : ((m + n : ℕ+) : ℕ) = m + n
+[THEOREM] nat.add_comm:  ∀ n m : ℕ, n + m = m + n | n 0
+[END]
+
+`example_assistant`
+[RUN TACTIC]
+rw nat.add_comm,
+[END]
+
 `conv end`

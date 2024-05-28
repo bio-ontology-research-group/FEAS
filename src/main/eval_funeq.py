@@ -96,16 +96,6 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
         llama_logger = setup_logger(__name__ + "_llama", os.path.join(eval_checkpoint_info.logging_dirs[-1], "llama.log"), logging.INFO, '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         # This is a llama model
         LlamaAccess.class_init(eval_settings.gpt_model_name, eval_settings.temperature, debug=False, logger=llama_logger)
-    if eval_benchmark.language == ProofAction.Language.ISABELLE:
-        isabelle_logger = setup_logger(__name__ + "_isabelle", os.path.join(eval_checkpoint_info.logging_dirs[-1], "isabelle.log"), logging.INFO, '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        # Check if environment variable PISA_PORT is set
-        if "PISA_PORT" not in os.environ:
-            os.environ["PISA_PORT"] = "17000"
-            if IsabelleExecutor.check_server_running(isabelle_logger):
-                raise Exception(
-                "PISA_PORT environment variable is not set but the PISA service is already running on default port 17000. " + 
-                "Please set the PISA_PORT environment variable to the port on which the PISA service is running.")
-        IsabelleExecutor.start_server(isabelle_logger)
     skip_files_in_checkpoint = False if "SKIP_FILES_IN_CHECKPOINT" not in os.environ else bool(os.environ["SKIP_FILES_IN_CHECKPOINT"])
 
     if eval_settings.proof_retries > 1:
@@ -174,16 +164,6 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
                     logger.exception(f"Exception occurred while getting all lemmas in file: {path}")
             manager = multiprocessing.Manager()
             return_dict = manager.dict()
-            # Check if PISA service is down otherwise restart it
-            if eval_benchmark.language == ProofAction.Language.ISABELLE and not IsabelleExecutor.check_server_running(logger):
-                # Kill the logging thread
-                try:
-                    IsabelleExecutor.stop_server()
-                except:
-                    pass
-                logger.warning("PISA service is down. Restarting it.")
-                IsabelleExecutor.start_server(logger) # Restart the server
-                logger.warning("Restarted the PISA service.")
             file_time_out = eval_settings.timeout_in_secs * eval_settings.max_proof_depth * 50
             logger.info(f"Getting all lemmas in file: {path} with timeout: {file_time_out} seconds")
             p = multiprocessing.Process(target=_get_all_lemmas, args=(return_dict, logger))
@@ -216,7 +196,6 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
                 file.theorems = list(random.sample(file.theorems, sample_size))
                 logger.info(f"Sampled lemmas to prove in file {path}: \n{file.theorems}")
             for lemma_name in file.theorems:
-                print(lemma_name)
                 no_proof_res = ProofSearchResult(
                     None, 
                     False, 
@@ -296,65 +275,16 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
                             dfs_tree_search,
                             checkpoint_on_exit=eval_settings.should_checkpoint,
                             language=eval_benchmark.language)
-                    elif eval_settings.policy_name == PolicyName.FewShot:
-                        if prompt_settings.informal_proof_repo is not None:
-                            informal_proof_repo = prompt_settings.get_informal_proof_repo()
-                        else:
-                            informal_proof_repo = None
-                        policy_prompter = FewShotGptPolicyPrompter(
-                            main_sys_prompt_path=prompt_settings.main_prompt,
-                            example_conv_prompt_path=prompt_settings.conv_prompt,
-                            temperature=eval_settings.temperature,
-                            max_tokens_per_action=eval_settings.max_tokens_per_action,
-                            max_history_messages=eval_settings.max_history_messages,
-                            gpt_model_name=eval_settings.gpt_model_name,
-                            k=eval_settings.max_theorems_in_prompt,
-                            retrieve_prompt_examples=eval_settings.use_example_retrieval,
-                            training_data_path=eval_benchmark.few_shot_data_path_for_retrieval,
-                            metadata_filename=eval_benchmark.few_shot_metadata_filename_for_retrieval,
-                            language=eval_benchmark.language,
-                            logger=logger)
-                        search_guidance_policy = FewShotGptPolicy(
-                            lemma_name,
-                            eval_settings.checkpoint_dir,
-                            lemma_name,
-                            policy_prompter,
-                            checkpoint_on_exit=eval_settings.should_checkpoint,
-                            language=eval_benchmark.language,
-                            logger=logger,
-                            informal_proof_repo=informal_proof_repo)
-                    elif eval_settings.policy_name == PolicyName.InformalFewShot:
-                        informal_proof_repo = prompt_settings.get_informal_proof_repo()
-                        informal_proof_dump_directory = os.path.join(eval_settings.proof_dump_dir, "informal_proofs")
-                        os.makedirs(informal_proof_dump_directory, exist_ok=True)
-                        policy_prompter = InformalFewShotGptPolicyPrompter(
-                            main_sys_prompt_path=prompt_settings.main_prompt,
-                            example_conv_prompt_path=prompt_settings.conv_prompt,
-                            temperature=eval_settings.temperature,
-                            max_tokens_per_action=eval_settings.max_tokens_per_action,
-                            max_history_messages=eval_settings.max_history_messages,
-                            gpt_model_name=eval_settings.gpt_model_name,
-                            k=eval_settings.max_theorems_in_prompt,
-                            retrieve_prompt_examples=eval_settings.use_example_retrieval,
-                            training_data_path=eval_benchmark.few_shot_data_path_for_retrieval,
-                            metadata_filename=eval_benchmark.few_shot_metadata_filename_for_retrieval,
-                            language=eval_benchmark.language,
-                            logger=logger)
-                        search_guidance_policy = InformalFewShotGptPolicy(
-                            lemma_name,
-                            eval_settings.checkpoint_dir,
-                            lemma_name,
-                            policy_prompter,
-                            informal_proof_repo,
-                            checkpoint_on_exit=eval_settings.should_checkpoint,
-                            language=eval_benchmark.language,
-                            logger=logger,
-                            informal_proof_dump_dir=informal_proof_dump_directory)
                     else:
                         raise Exception(f"Unknown policy name: {eval_settings.policy_name}")
                     proof_res_chkpt = None
                     # proof_res_chkpt = eval_proof_results.theorem_map.get(path, {}).get(lemma_name, None)
                     max_retry_attempts = file.max_retry_attempts_limits.get(lemma_name, eval_settings.proof_retries)
+                    # print("##################################################")
+                    # print(proof_res_chkpt is None)
+                    # print(proof_res_chkpt.proof_found)
+                    # print(proof_res_chkpt.additional_info["attempt_idx"])
+                    # print(max_retry_attempts - 1)
                     if proof_res_chkpt is None or (not proof_res_chkpt.proof_found and proof_res_chkpt.additional_info["attempt_idx"] < max_retry_attempts - 1):
                         any_proof_attempted = True
                         manager = multiprocessing.Manager()
@@ -364,22 +294,12 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
                                 with ProofEnv(f"basic_proof_env_{lemma_name}", proof_exec_callback, lemma_name, retrieval_strategy=env_settings.retrieval_strategy, max_proof_depth=eval_settings.max_proof_depth, always_retrieve_thms=eval_settings.always_use_useful_theorem_retrieval, logger=logger) as env:
                                     with search_guidance_policy:
                                         agent = ProofAgent(f"proof_agent_{lemma_name}", search_guidance_policy, eval_settings.should_checkpoint, proof_dump_file_name, logger=logger)
-                                        if "block" in prompt_settings.name:
-                                            agent.run_block_episodes_till_stop(
-                                                env,
-                                                episodes=eval_settings.max_number_of_episodes,
-                                                render=eval_settings.render,
-                                                stop_policy=check_query_limit_reached(
-                                                    eval_settings.max_steps_per_episode),
-                                                policy_info_message=query_limit_info_message(
-                                                    eval_settings.max_steps_per_episode))
-                                        else:
-                                            agent.run_episodes_till_stop(
-                                                env,
-                                                episodes=eval_settings.max_number_of_episodes,
-                                                render=eval_settings.render,
-                                                stop_policy=check_query_limit_reached(eval_settings.max_steps_per_episode),
-                                                policy_info_message=query_limit_info_message(eval_settings.max_steps_per_episode))
+                                        agent.run_episodes_till_stop(
+                                            env,
+                                            episodes=eval_settings.max_number_of_episodes,
+                                            render=eval_settings.render,
+                                            stop_policy=check_query_limit_reached(eval_settings.max_steps_per_episode),
+                                            policy_info_message=query_limit_info_message(eval_settings.max_steps_per_episode))
                                     proof_res = env.proof_search_res
                                     ret_dict["proof_res"] = proof_res
                                     ret_dict["attempted_success"] = True
@@ -411,15 +331,6 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
                                 p.join()
                             p.close()
                             toc_end = time.time()
-                            if eval_benchmark.language == ProofAction.Language.ISABELLE and \
-                                not IsabelleExecutor.check_server_running(logger) and \
-                                "attempted_success" in return_dict and \
-                                not return_dict["attempted_success"]:
-                                logger.warning("PISA service is down. The proof might have failed, just because the server was down.")
-                                # if it is down then check whether the last proof was completed successfully or not
-                                # if not then remove "attempted_success" from return_dict so that we know 
-                                # that attempt was not successful
-                                return_dict.pop("attempted_success")
                             if track_time:
                                 time_budget_tracker[path][lemma_name] -= (toc_end - tic_start)
                             if track_time and time_budget_tracker[path][lemma_name] <= 0:

@@ -111,6 +111,7 @@ class ProofEnv(Env):
         else:
             raise NotImplementedError(f"Retrieval strategy {self.retrieve_strategy} not implemented")
         self.logger = logger if logger is not None else logging.getLogger(__name__)
+        self.num_backtracks = 0
 
     def __enter__(self):
         self.reset()
@@ -193,6 +194,7 @@ class ProofEnv(Env):
         self._foward_to_lemma_proof()
         self.goal_start_time = time.time()
         self.inferences_used = 0
+        self.num_backtracks = 0
         
         # If in Isabelle, automatically enter proof
         if self.language == ProofAction.Language.ISABELLE:
@@ -214,6 +216,7 @@ class ProofEnv(Env):
             self._get_dfns_thms(history_idx)
         elif action.action_type == ProofAction.ActionType.BACKTRACK:
             self._backtrack(history_idx)
+            self.num_backtracks += 1
         elif action.action_type == ProofAction.ActionType.INFORMAL:
             training_data_format = TrainingDataFormat(proof_steps=[action.kwargs['proof']])
             self._p_tree.try_add_tactic(1, training_data_format, force_add=True, action=action)
@@ -274,7 +277,7 @@ class ProofEnv(Env):
             self.time_taken, 
             self.inferences_used, 
             possible_failed_paths=-1, 
-            num_of_backtracks=-1, 
+            num_of_backtracks=self.num_backtracks,
             is_timeout=False, 
             is_inference_exhausted=False, 
             longest_success_path=-1,
@@ -300,7 +303,6 @@ class ProofEnv(Env):
         assert all([isinstance(tactic, str) for tactic in tactics])
         # Remove unnecessary spaces, newlines, and tabs
         tactics = [tactic.strip() for tactic in tactics]
-        original_tactics = copy.deepcopy(tactics)
         try:
             state, next_state, reward, done, env_info = self._run_tactics(tactics, state, action, env_info)
         except Exception:
@@ -312,12 +314,12 @@ class ProofEnv(Env):
             done = False
             env_info.progress = ProgressState.FAILED
             env_info.error_message = self._dynamic_proof_executor.get_last_exception()
-        if self.language == ProofAction.Language.ISABELLE and \
-        (len(original_tactics) != len(tactics) or \
-         any([original_tactics[i] != tactics[i] for i in range(len(original_tactics))])):
-            # It is possible in case of Isabelle that tactics are modified by the proof executor when hammer is used
-            # So we need to update the tactics in the action
-            action.kwargs["tactics"] = tactics
+        # if self.language == ProofAction.Language.ISABELLE and \
+        # (len(original_tactics) != len(tactics) or \
+        #  any([original_tactics[i] != tactics[i] for i in range(len(original_tactics))])):
+        #     # It is possible in case of Isabelle that tactics are modified by the proof executor when hammer is used
+        #     # So we need to update the tactics in the action
+        #     action.kwargs["tactics"] = tactics
         self._history[history_idx] = (state, action, next_state, reward, done, env_info)
 
     def _run_tactics(self, tactics: typing.List[str], state: ProofState, action: ProofAction, env_info: ProofEnvInfo):

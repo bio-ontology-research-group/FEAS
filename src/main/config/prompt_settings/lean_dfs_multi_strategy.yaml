@@ -1,0 +1,4 @@
+name: lean_dfs_multi_strategy
+main_prompt: data/prompts/system/lean-multi-strategy.md
+conv_prompt: data/prompts/conversation/lean-proof-agent-example-dfs-multiple.md
+informal_proof_repo:
