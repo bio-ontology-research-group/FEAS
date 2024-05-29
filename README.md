@@ -36,15 +36,15 @@ The setup for FEAS follows the same procedure as the COPRA project, tailored for
      ```
 
 ## Running FEAS Experiments
-To conduct experiments using FEAS, use the script `src/main/eval_benchmark.py` with the specified parameters:
+To run FEAS experiments, execute `src/main/eval_benchmark.py` with the specified parameters:
 - `eval_settings=n_60_dfs_gpt4_128k always`
-- Set `prompt_settings` according to the desired context:
-  - `lean_few_shot` for few-shot scenarios
-  - `lean_dfs` for COPRA agent configurations
+- Set `prompt_settings` according to the desired agent:
+  - `lean_few_shot` for few-shot
+  - `lean_dfs` for COPRA agent
   - `lean_dfs_block` for FEAS agent
   - `lean_dfs_block_strategy` for FEAS agent with heuristics
 
-- Define the `benchmark` parameter based on the problem complexity:
+- Set `benchmark` based on the problem category of FunEq:
   - `simple_funeq` for simple problems
   - `intermediate_funeq` for intermediate-level problems
   - `imo_a1_funeq` for IMO shortlisted A1 problems
