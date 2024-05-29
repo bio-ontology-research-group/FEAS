@@ -1,4 +1,4 @@
-name: simple_funeq_final
+name: simple_funeq
 num_files: 1
 language: LEAN
 few_shot_data_path_for_retrieval:

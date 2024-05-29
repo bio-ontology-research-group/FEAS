@@ -216,7 +216,6 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
                 file.theorems = list(random.sample(file.theorems, sample_size))
                 logger.info(f"Sampled lemmas to prove in file {path}: \n{file.theorems}")
             for lemma_name in file.theorems:
-                print(lemma_name)
                 no_proof_res = ProofSearchResult(
                     None, 
                     False, 

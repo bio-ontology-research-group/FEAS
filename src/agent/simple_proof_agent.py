@@ -57,8 +57,6 @@ class ProofAgent(Agent):
         policy_info_message: typing.Callable[[int, typing.Dict[str, typing.Any]], str]):
         assert isinstance(env, ProofEnv)
         while episodes > 0:
-            print("NOT BLOCK")
-
             self._run_episode_as_per_policy(env, stop_policy, policy_info_message, render)
             episodes -= 1
     def run_block_episodes_till_stop(self, env: ProofEnv, episodes: int, render: bool,
@@ -66,7 +64,6 @@ class ProofAgent(Agent):
         policy_info_message: typing.Callable[[int, typing.Dict[str, typing.Any]], str]):
         assert isinstance(env, ProofEnv)
         while episodes > 0:
-            print("BLOCK")
             self._run_block_episode_as_per_policy(env, stop_policy, policy_info_message, render)
             episodes -= 1
 

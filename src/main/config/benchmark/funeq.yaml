@@ -1,4 +1,4 @@
-name: simple_funeq3
+name: funeq
 num_files: 1
 language: LEAN
 few_shot_data_path_for_retrieval:
@@ -6,9 +6,7 @@ few_shot_metadata_filename_for_retrieval:
 dfs_data_path_for_retrieval:
 dfs_metadata_filename_for_retrieval:
 datasets:
-  - project: data/benchmarks/miniF2F
+  - project: data/benchmarks/FunEq
     files:
-      - path: lean/src/test.lean
-        theorems:
-          - simple_funeq_16
-          - simple_funeq_17
+      - path: src/dataset.lean
+        theorems: "*"
