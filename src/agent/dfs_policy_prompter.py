@@ -13,6 +13,9 @@ from openai.error import InvalidRequestError
 from src.agent.rate_limiter import RateLimiter, InvalidActionException
 from src.agent.gpt_guided_tree_search_policy import PromptSummary, ProofQInfo, TreeSearchAction, TreeSearchActionType
 from src.gpts.gpt_access import GptAccess
+from src.gpts.gemini_access import GeminiAccess
+from src.gpts.claude_access import ClaudeAccess
+from src.gpts.llama3_access import Llama3Access
 from src.gpts.llama_access import LlamaAccess, ServiceDownError
 from src.rl.proof_action import ProofAction
 from src.rl.simple_proof_env import ProgressState
@@ -54,8 +57,13 @@ class DfsCoqGptPolicyPrompter(PolicyPrompter):
         main_message = self.agent_grammar.get_openai_main_message(main_sys_prompt_path, "system")
         # self.system_messages = [main_message] + conv_messages
         self.system_messages = [main_message]
-
-        if not gpt_model_name.startswith("gpt"):
+        if gpt_model_name.startswith("gemini"):
+            self._gpt_access = GeminiAccess(model_name=gpt_model_name)
+        elif gpt_model_name.startswith("claude"):
+            self._gpt_access = ClaudeAccess(model_name=gpt_model_name)
+        elif gpt_model_name.startswith("meta"):
+            self._gpt_access = Llama3Access(model_name=gpt_model_name)
+        elif not gpt_model_name.startswith("gpt"):
             self._gpt_access = LlamaAccess(gpt_model_name)
         else:
             self._gpt_access = GptAccess(secret_filepath=secret_filepath, model_name=gpt_model_name)
@@ -337,7 +345,6 @@ class DfsCoqGptPolicyPrompter(PolicyPrompter):
         # log_file_path = os.path.join(debug_dir, f"{today_date}.txt")
         max_tokens_in_prompt = self._max_token_per_prompt - self.system_token_count - self._max_tokens_per_action
         prompt_message, prompt_token_count, custom_system_msg, custom_system_msg_cnt = self._get_prompt_message(request, max_tokens_in_prompt)
-
         messages, total_token_count = self._constrain_tokens_in_history(prompt_message, custom_system_msg, custom_system_msg_cnt, prompt_token_count, self._max_tokens_per_action)
         # print(f"Prompt sent to GPT model:\n{messages}\n\n")
         # with open(log_file_path, "a") as log_file:

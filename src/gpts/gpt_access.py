@@ -56,7 +56,22 @@ class GptAccess(object):
             "token_limit_per_min": 10**6,
             "request_limit_per_min": 10**6,
             "max_token_per_prompt": int(13.75*2**10) # less than 16k because additional tokens are added at times            
-        }
+        },
+        "gemini-1.5-pro": {
+            "token_limit_per_min": 2 * 10 ** 6,  # Placeholder - need to find actual Gemini limits
+            "request_limit_per_min": 360,  # Placeholder
+            "max_token_per_prompt": 2097152  # Up to 32k tokens for Gemini Pro
+        },
+        "claude-3-5-sonnet@20240620": {
+            "token_limit_per_min": 4 * 10 ** 4,  # Placeholder - need to find actual Gemini limits
+            "request_limit_per_min": 50,  # Placeholder
+            "max_token_per_prompt": 200000  # Up to 32k tokens for Gemini Pro
+        },
+        "meta/meta-llama-3-70b-instruct": {
+            "token_limit_per_min": 4 * 10 ** 4,  # Placeholder - need to find actual Gemini limits
+            "request_limit_per_min": 600,  # Placeholder
+            "max_token_per_prompt": 8000  # Up to 32k tokens for Gemini Pro
+        },
     }
     def __init__(self, 
         secret_filepath: str = ".secrets/openai_key.json",
@@ -126,6 +141,7 @@ class GptAccess(object):
             presence_penalty: float = 0.0,
             stop: list = ["\n"]) -> typing.Tuple[list, dict]:
         model = self.model_name if model is None else model
+
         if self.is_open_ai_model:
             response = openai.ChatCompletion.create(
                 model=model,
@@ -156,6 +172,18 @@ class GptAccess(object):
             self.usage["prompt_tokens"] += usage.prompt_tokens
             self.usage["completion_tokens"] += usage.completion_tokens
             self.usage["total_tokens"] += usage.total_tokens
+
+        with open('flow.txt', 'a') as file:
+            file.write('#######################################################################################\nINPUT')
+            for message in messages:
+                file.write(message["role"] + ':\n')
+                file.write(message['content'] + '\n')
+            file.write('OUTPUT\n')
+            for choice in response.choices:
+                file.write(choice.message.role + ':\n')
+                file.write(choice.message.content + '\n')
+            file.write('\n\n\n')
+
         return_responses = [{"role": choice.message.role, "content": choice.message.content} for choice in response.choices]
         for i in range(len(return_responses) - 1):
             return_responses[i]["finish_reason"] = "stop"

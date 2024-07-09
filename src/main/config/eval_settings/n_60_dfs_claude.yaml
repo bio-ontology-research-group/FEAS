@@ -1,4 +1,4 @@
-name: n_60_dfs_gpt4_128k
+name: n_60_dfs_claude
 setting_type: Agent
 use_hammer: ALLOW
 max_proof_depth: 100
@@ -8,7 +8,7 @@ proof_retries: 1
 # conv_prompt: data/prompts/conversation/coq-proof-agent-example-long-conv-dfs-always-retrieve.md
 max_tokens_per_action: 300
 max_theorems_in_prompt: 7
-gpt_model_name: gpt-4-1106-preview
+gpt_model_name: claude-3-5-sonnet@20240620
 max_number_of_episodes: 1
 max_steps_per_episode: 60
 render: False

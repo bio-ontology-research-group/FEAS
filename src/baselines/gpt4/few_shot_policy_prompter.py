@@ -16,6 +16,9 @@ from src.retrieval.coq_bm25_reranker import CoqBM25TrainingDataRetriever
 from src.agent.rate_limiter import RateLimiter, InvalidActionException
 from src.agent.gpt_guided_tree_search_policy import TreeSearchAction
 from src.gpts.gpt_access import GptAccess
+from src.gpts.gemini_access import GeminiAccess
+from src.gpts.claude_access import ClaudeAccess
+from src.gpts.llama3_access import Llama3Access
 from src.gpts.llama_access import LlamaAccess
 from src.rl.proof_action import ProofAction
 from src.prompt_generator.prompter import PolicyPrompter
@@ -50,11 +53,18 @@ class FewShotGptPolicyPrompter(PolicyPrompter):
         self.gpt_response_grammar = FewShotGptResponseGrammar(language)
         conv_messages = self.agent_grammar.get_openai_conv_messages(example_conv_prompt_path, "system")
         main_message = self.agent_grammar.get_openai_main_message(main_sys_prompt_path, "system")
-        self.system_messages = [main_message] + conv_messages
-        if not gpt_model_name.startswith("gpt"):
+        self.system_messages = [main_message]
+        if gpt_model_name.startswith("gemini"):
+            self._gpt_access = GeminiAccess(model_name=gpt_model_name)
+        elif gpt_model_name.startswith("claude"):
+            self._gpt_access = ClaudeAccess(model_name=gpt_model_name)
+        elif gpt_model_name.startswith("meta"):
+            self._gpt_access = Llama3Access(model_name=gpt_model_name)
+        elif not gpt_model_name.startswith("gpt"):
             self._gpt_access = LlamaAccess(gpt_model_name)
         else:
             self._gpt_access = GptAccess(secret_filepath=secret_filepath, model_name=gpt_model_name)
+        self._token_limit_per_min = GptAccess.gpt_model_info[gpt_model_name]["token_limit_per_min"]
         self._token_limit_per_min = GptAccess.gpt_model_info[gpt_model_name]["token_limit_per_min"]
         self._request_limit_per_min = GptAccess.gpt_model_info[gpt_model_name]["request_limit_per_min"]
         self._max_token_per_prompt = GptAccess.gpt_model_info[gpt_model_name]["max_token_per_prompt"]

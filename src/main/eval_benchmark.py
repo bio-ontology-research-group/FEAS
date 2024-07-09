@@ -33,12 +33,12 @@ from src.rl.simple_proof_env import ProofEnv
 from src.rl.proof_action import ProofAction
 from src.baselines.gpt4.informal_few_shot_policy import InformalFewShotGptPolicy
 from src.baselines.gpt4.informal_few_shot_policy_prompter import InformalFewShotGptPolicyPrompter
-from src.tools.isabelle_executor import IsabelleExecutor
+# from src.tools.isabelle_executor import IsabelleExecutor
 from src.tools.proof_exec_callback import ProofExecutorCallback
 from src.tools.ray_utils import RayUtils
 from src.tools.dynamic_coq_proof_exec import DynamicProofExecutor as DynamicCoqProofExecutor
 from src.tools.dynamic_lean_proof_exec import DynamicProofExecutor as DynamicLeanProofExecutor
-from src.tools.dynamic_isabelle_proof_exec import DynamicProofExecutor as DynamicIsabelleProofExecutor
+# from src.tools.dynamic_isabelle_proof_exec import DynamicProofExecutor as DynamicIsabelleProofExecutor
 from src.tools.informal_proof_repo import InformalProofRepo
 
 def check_query_limit_reached(max_query_limit: int) -> typing.Callable[[int, typing.Dict[str, typing.Any]], bool]:
@@ -72,40 +72,40 @@ def get_all_lemmas(coq_proof_exec_callback: ProofExecutorCallback, logger: loggi
                     logger.info(f"Discovered lemma: {lemma_name}")
                     lemmas_to_prove.append(lemma_name)
                     main_executor.run_to_finish_lemma()
-        elif isinstance(main_executor, DynamicIsabelleProofExecutor):
-            while not main_executor.execution_complete:
-                assert not main_executor.is_in_proof_mode(), "main_executor must not be in proof mode"
-                _ = list(main_executor.run_till_next_lemma_return_exec_stmt())
-                if main_executor.execution_complete:
-                    break
-                lemma_name = main_executor.get_lemma_name_if_running()
-                if lemma_name is None:
-                    _ = list(main_executor.run_to_finish_lemma_return_exec())
-                    if main_executor.execution_complete:
-                        break
-                else:
-                    logger.info(f"Discovered lemma: {lemma_name}")
-                    lemmas_to_prove.append(lemma_name)
-                    main_executor.run_to_finish_lemma()
+        # elif isinstance(main_executor, DynamicIsabelleProofExecutor):
+        #     while not main_executor.execution_complete:
+        #         assert not main_executor.is_in_proof_mode(), "main_executor must not be in proof mode"
+        #         _ = list(main_executor.run_till_next_lemma_return_exec_stmt())
+        #         if main_executor.execution_complete:
+        #             break
+        #         lemma_name = main_executor.get_lemma_name_if_running()
+        #         if lemma_name is None:
+        #             _ = list(main_executor.run_to_finish_lemma_return_exec())
+        #             if main_executor.execution_complete:
+        #                 break
+        #         else:
+        #             logger.info(f"Discovered lemma: {lemma_name}")
+        #             lemmas_to_prove.append(lemma_name)
+        #             main_executor.run_to_finish_lemma()
     logger.info(f"Discovered {len(lemmas_to_prove)} lemmas")
     return lemmas_to_prove
 
 def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, prompt_settings: PromptSettings, dataset: EvalDataset, eval_settings: EvalSettings, eval_checkpoint_info: EvalRunCheckpointInfo, eval_proof_results: EvalProofResults, logger: logging.Logger = None):
     logger = logger or logging.getLogger(__name__)
-    if eval_settings.gpt_model_name is not None and len(eval_settings.gpt_model_name) !=0 and not eval_settings.gpt_model_name.startswith("gpt"):
+    if eval_settings.gpt_model_name is not None and len(eval_settings.gpt_model_name) !=0 and not eval_settings.gpt_model_name.startswith("gpt") and not eval_settings.gpt_model_name.startswith("gemini") and not eval_settings.gpt_model_name.startswith("claude") and not eval_settings.gpt_model_name.startswith("meta"):
         llama_logger = setup_logger(__name__ + "_llama", os.path.join(eval_checkpoint_info.logging_dirs[-1], "llama.log"), logging.INFO, '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         # This is a llama model
         LlamaAccess.class_init(eval_settings.gpt_model_name, eval_settings.temperature, debug=False, logger=llama_logger)
-    if eval_benchmark.language == ProofAction.Language.ISABELLE:
-        isabelle_logger = setup_logger(__name__ + "_isabelle", os.path.join(eval_checkpoint_info.logging_dirs[-1], "isabelle.log"), logging.INFO, '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        # Check if environment variable PISA_PORT is set
-        if "PISA_PORT" not in os.environ:
-            os.environ["PISA_PORT"] = "17000"
-            if IsabelleExecutor.check_server_running(isabelle_logger):
-                raise Exception(
-                "PISA_PORT environment variable is not set but the PISA service is already running on default port 17000. " + 
-                "Please set the PISA_PORT environment variable to the port on which the PISA service is running.")
-        IsabelleExecutor.start_server(isabelle_logger)
+    # if eval_benchmark.language == ProofAction.Language.ISABELLE:
+    #     isabelle_logger = setup_logger(__name__ + "_isabelle", os.path.join(eval_checkpoint_info.logging_dirs[-1], "isabelle.log"), logging.INFO, '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    #     # Check if environment variable PISA_PORT is set
+    #     if "PISA_PORT" not in os.environ:
+    #         os.environ["PISA_PORT"] = "17000"
+    #         if IsabelleExecutor.check_server_running(isabelle_logger):
+    #             raise Exception(
+    #             "PISA_PORT environment variable is not set but the PISA service is already running on default port 17000. " +
+    #             "Please set the PISA_PORT environment variable to the port on which the PISA service is running.")
+    #     IsabelleExecutor.start_server(isabelle_logger)
     skip_files_in_checkpoint = False if "SKIP_FILES_IN_CHECKPOINT" not in os.environ else bool(os.environ["SKIP_FILES_IN_CHECKPOINT"])
 
     if eval_settings.proof_retries > 1:
@@ -175,15 +175,15 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
             manager = multiprocessing.Manager()
             return_dict = manager.dict()
             # Check if PISA service is down otherwise restart it
-            if eval_benchmark.language == ProofAction.Language.ISABELLE and not IsabelleExecutor.check_server_running(logger):
-                # Kill the logging thread
-                try:
-                    IsabelleExecutor.stop_server()
-                except:
-                    pass
-                logger.warning("PISA service is down. Restarting it.")
-                IsabelleExecutor.start_server(logger) # Restart the server
-                logger.warning("Restarted the PISA service.")
+            # if eval_benchmark.language == ProofAction.Language.ISABELLE and not IsabelleExecutor.check_server_running(logger):
+            #     # Kill the logging thread
+            #     try:
+            #         IsabelleExecutor.stop_server()
+            #     except:
+            #         pass
+            #     logger.warning("PISA service is down. Restarting it.")
+            #     IsabelleExecutor.start_server(logger) # Restart the server
+            #     logger.warning("Restarted the PISA service.")
             file_time_out = eval_settings.timeout_in_secs * eval_settings.max_proof_depth * 50
             logger.info(f"Getting all lemmas in file: {path} with timeout: {file_time_out} seconds")
             p = multiprocessing.Process(target=_get_all_lemmas, args=(return_dict, logger))
@@ -410,15 +410,15 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
                                 p.join()
                             p.close()
                             toc_end = time.time()
-                            if eval_benchmark.language == ProofAction.Language.ISABELLE and \
-                                not IsabelleExecutor.check_server_running(logger) and \
-                                "attempted_success" in return_dict and \
-                                not return_dict["attempted_success"]:
-                                logger.warning("PISA service is down. The proof might have failed, just because the server was down.")
-                                # if it is down then check whether the last proof was completed successfully or not
-                                # if not then remove "attempted_success" from return_dict so that we know 
-                                # that attempt was not successful
-                                return_dict.pop("attempted_success")
+                            # if eval_benchmark.language == ProofAction.Language.ISABELLE and \
+                            #     not IsabelleExecutor.check_server_running(logger) and \
+                            #     "attempted_success" in return_dict and \
+                            #     not return_dict["attempted_success"]:
+                            #     logger.warning("PISA service is down. The proof might have failed, just because the server was down.")
+                            #     # if it is down then check whether the last proof was completed successfully or not
+                            #     # if not then remove "attempted_success" from return_dict so that we know
+                            #     # that attempt was not successful
+                            #     return_dict.pop("attempted_success")
                             if track_time:
                                 time_budget_tracker[path][lemma_name] -= (toc_end - tic_start)
                             if track_time and time_budget_tracker[path][lemma_name] <= 0:
@@ -503,11 +503,11 @@ def eval_dataset(env_settings: EnvSettings, eval_benchmark: EvalBenchmark, promp
                     eval_checkpoint_info.add_theorem_to_maps(path, lemma_name, False)
         proof_attempts_done = not any_proof_attempted
 
-    if eval_settings.gpt_model_name is not None and len(eval_settings.gpt_model_name) !=0 and not eval_settings.gpt_model_name.startswith("gpt"):
+    if eval_settings.gpt_model_name is not None and len(eval_settings.gpt_model_name) !=0 and not eval_settings.gpt_model_name.startswith("gpt") and not eval_settings.gpt_model_name.startswith("gemini") and not eval_settings.gpt_model_name.startswith("claude") and not eval_settings.gpt_model_name.startswith("meta"):
         # This is a llama model
         LlamaAccess.class_kill()
-    if eval_benchmark.language == ProofAction.Language.ISABELLE:
-        IsabelleExecutor.stop_server()
+    # if eval_benchmark.language == ProofAction.Language.ISABELLE:
+    #     IsabelleExecutor.stop_server()
     pass
 
 def measure_success(benchmark : EvalBenchmark, eval_settings : EvalSettings, eval_proof_results: EvalProofResults, logger: logging.Logger = None):

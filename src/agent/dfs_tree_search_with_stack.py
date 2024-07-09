@@ -12,7 +12,7 @@ from dataclasses_json import dataclass_json
 from src.rl.q_tree import QTreeStateInfo
 from src.tools.dynamic_coq_proof_exec import DynamicProofExecutor as DynamicCoqProofExecutor
 from src.tools.dynamic_lean_proof_exec import DynamicProofExecutor as DynamicLeanProofExecutor
-from src.tools.dynamic_isabelle_proof_exec import DynamicProofExecutor as DynamicIsabelleProofExecutor
+# from src.tools.dynamic_isabelle_proof_exec import DynamicProofExecutor as DynamicIsabelleProofExecutor
 from src.agent.gpt_guided_tree_search_policy import PromptSummary, ProofQTree, StateType, TreeSearchAction, TreeSearchActionType
 from src.agent.gpt_guided_tree_search_policy import ProofQInfo, ProofQTree
 from src.rl.simple_proof_env import ProofEnvInfo, ProgressState
@@ -118,9 +118,9 @@ class DFSTreeSearch(TreeSearchAlgorithm):
         elif self.language == ProofAction.Language.LEAN:
             description_match = DynamicLeanProofExecutor.ProofFinishedDescription
             qed_tac = ["end"]
-        elif self.language == ProofAction.Language.ISABELLE:
-            description_match = DynamicIsabelleProofExecutor.ProofFinishedDescription
-            qed_tac = ["qed"]
+        # elif self.language == ProofAction.Language.ISABELLE:
+        #     description_match = DynamicIsabelleProofExecutor.ProofFinishedDescription
+        #     qed_tac = ["qed"]
         else:
             raise NotImplementedError(f"language {self.language} not supported")
         if next_state.training_data_format is not None and next_state.training_data_format.goal_description == description_match:

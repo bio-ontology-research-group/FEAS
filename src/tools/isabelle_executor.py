@@ -15,7 +15,7 @@ import time
 import threading
 from collections import OrderedDict
 from pathlib import Path
-from src.pisa.src.main.python.pisa_client import PisaEnv, initialise_env, IsabelleLemma
+# from src.pisa.src.main.python.pisa_client import PisaEnv, initialise_env, IsabelleLemma
 from src.rl.proof_action import ProofAction
 from src.tools.isabelle_parse_utils import IsabelleLineByLineReader, IsabelleStepByStepStdInReader
 logger = logging.getLogger()
@@ -136,7 +136,7 @@ class IsabelleExecutor:
         self.main_file_iter = proof_step_iter
         self.buffer = ""
         self.suppress_error_log = suppress_error_log
-        self.pisa_env : PisaEnv = None
+        # self.pisa_env : PisaEnv = None
         self.proof_context : ProofContext = None
         self.curr_lemma_name : typing.Optional[str] = None
         self.curr_lemma : typing.Optional[str] = ""

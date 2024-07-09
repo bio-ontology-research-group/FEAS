@@ -8,7 +8,7 @@ if root_dir not in sys.path:
 import typing
 from src.tools.dynamic_coq_proof_exec import DynamicProofExecutor as DynamicCoqProofExecutor
 from src.tools.dynamic_lean_proof_exec import DynamicProofExecutor as DynamicLeanProofExecutor
-from src.tools.dynamic_isabelle_proof_exec import DynamicProofExecutor as DynamicIsabelleProofExecutor
+# from src.tools.dynamic_isabelle_proof_exec import DynamicProofExecutor as DynamicIsabelleProofExecutor
 from src.rl.abstraction import State
 from src.rl.proof_action import ProofAction
 from src.tools.training_data_format import TrainingDataFormat
@@ -41,8 +41,8 @@ class ProofState(State):
             desc_cmp = DynamicCoqProofExecutor.goal_description_compare(self.training_data_format.goal_description, other.training_data_format.goal_description)
         elif self.language == ProofAction.Language.LEAN:
             desc_cmp = DynamicLeanProofExecutor.goal_description_compare(self.training_data_format.goal_description, other.training_data_format.goal_description)
-        elif self.language == ProofAction.Language.ISABELLE:
-            desc_cmp = DynamicIsabelleProofExecutor.goal_description_compare(self.training_data_format.goal_description, other.training_data_format.goal_description)
+        # elif self.language == ProofAction.Language.ISABELLE:
+        #     desc_cmp = DynamicIsabelleProofExecutor.goal_description_compare(self.training_data_format.goal_description, other.training_data_format.goal_description)
         else:
             raise NotImplementedError(f"language {self.language} not supported")
         if desc_cmp == 0:
@@ -75,8 +75,8 @@ class ProofState(State):
             desc_cmp = DynamicCoqProofExecutor.goal_description_compare(self.training_data_format.goal_description, __o.training_data_format.goal_description)
         elif self.language == ProofAction.Language.LEAN:
             desc_cmp = DynamicLeanProofExecutor.goal_description_compare(self.training_data_format.goal_description, __o.training_data_format.goal_description)
-        elif self.language == ProofAction.Language.ISABELLE:
-            desc_cmp = DynamicIsabelleProofExecutor.goal_description_compare(self.training_data_format.goal_description, __o.training_data_format.goal_description)
+        # elif self.language == ProofAction.Language.ISABELLE:
+        #     desc_cmp = DynamicIsabelleProofExecutor.goal_description_compare(self.training_data_format.goal_description, __o.training_data_format.goal_description)
         else:
             raise NotImplementedError(f"language {self.language} not supported")
         if desc_cmp == 0:
@@ -103,8 +103,8 @@ class ProofState(State):
             desc_cmp = DynamicCoqProofExecutor.goal_description_compare(self.training_data_format.goal_description, __o.training_data_format.goal_description)
         elif self.language == ProofAction.Language.LEAN:
             desc_cmp = DynamicLeanProofExecutor.goal_description_compare(self.training_data_format.goal_description, __o.training_data_format.goal_description)
-        elif self.language == ProofAction.Language.ISABELLE:
-            desc_cmp = DynamicIsabelleProofExecutor.goal_description_compare(self.training_data_format.goal_description, __o.training_data_format.goal_description)
+        # elif self.language == ProofAction.Language.ISABELLE:
+        #     desc_cmp = DynamicIsabelleProofExecutor.goal_description_compare(self.training_data_format.goal_description, __o.training_data_format.goal_description)
         else:
             raise NotImplementedError(f"language {self.language} not supported")
         if desc_cmp == 0:

@@ -14,15 +14,15 @@ from src.rl.proof_tree import ProofSearchResult, ProofTree
 from src.rl.proof_state import ProofState
 from src.rl.proof_action import ProofAction
 from src.rl.abstraction import State, Action, Env
-from src.tools.isabelle_executor import IsabelleExecutor
+# from src.tools.isabelle_executor import IsabelleExecutor
 from src.tools.proof_exec_callback import ProofExecutorCallback
 from src.tools.training_data_format import TrainingDataFormat
 from src.tools.dynamic_lean_proof_exec import DynamicProofExecutor as DynamicLeanProofExecutor
 from src.tools.dynamic_coq_proof_exec import DynamicProofExecutor as DynamicCoqProofExecutor
-from src.tools.dynamic_isabelle_proof_exec import DynamicProofExecutor as DynamicIsabelleProofExecutor
+# from src.tools.dynamic_isabelle_proof_exec import DynamicProofExecutor as DynamicIsabelleProofExecutor
 from src.retrieval.coq_bm25_reranker import CoqBm25ReRanker
 from src.retrieval.lean3_bm25_reranker import Lean3Bm25ReRanker
-from src.retrieval.isabelle_bm25_reranker import IsabelleBm25ReRanker
+# from src.retrieval.isabelle_bm25_reranker import IsabelleBm25ReRanker
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json
 from enum import Enum
@@ -77,7 +77,7 @@ class ProofEnv(Env):
         assert isinstance(max_proof_depth, int)
         assert isinstance(always_retrieve_thms, bool)
         self.dynamic_proof_executor_callback = dynamic_proof_executor_callback
-        self._dynamic_proof_executor : typing.Union[DynamicCoqProofExecutor, DynamicLeanProofExecutor, DynamicIsabelleProofExecutor] = None
+        self._dynamic_proof_executor : typing.Union[DynamicCoqProofExecutor, DynamicLeanProofExecutor] = None
         self._loaded = False
         self._history : typing.List[typing.Tuple[ProofState, ProofAction, ProofState, float, bool, ProofEnvInfo]] = []
         self._name = name
@@ -103,8 +103,8 @@ class ProofEnv(Env):
                     ProofEnv._re_ranker = CoqBm25ReRanker(language=str(self.language))
                 elif self.language == ProofAction.Language.LEAN:
                     ProofEnv._re_ranker = Lean3Bm25ReRanker(language=str(self.language))
-                elif self.language == ProofAction.Language.ISABELLE:
-                    ProofEnv._re_ranker = IsabelleBm25ReRanker(language=str(self.language))
+                # elif self.language == ProofAction.Language.ISABELLE:
+                #     ProofEnv._re_ranker = IsabelleBm25ReRanker(language=str(self.language))
                 else:
                     raise NotImplementedError(f"Language {self.language} not implemented")
             self._re_ranker = ProofEnv._re_ranker
@@ -509,20 +509,20 @@ class ProofEnv(Env):
         elif isinstance(self._dynamic_proof_executor, DynamicLeanProofExecutor):
             self._dynamic_proof_executor.skip_to_theorem(self.lemma_name)
             lemma_found = True
-        elif isinstance(self._dynamic_proof_executor, DynamicIsabelleProofExecutor):
-            while not self._dynamic_proof_executor.execution_complete and not lemma_found:
-                assert not self._dynamic_proof_executor.is_in_proof_mode(), "executor must not be in proof mode"
-                _ = list(self._dynamic_proof_executor.run_till_next_lemma_return_exec_stmt())
-                if self._dynamic_proof_executor.execution_complete:
-                    break
-                lemma_name = self._dynamic_proof_executor.get_lemma_name_if_running()
-                if lemma_name is not None:
-                    lemma_name = lemma_name.strip()
-                lemma_found = lemma_name.startswith(self.lemma_name) if lemma_name is not None else False
-                if not lemma_found:
-                    _ = list(self._dynamic_proof_executor.run_to_finish_lemma_return_exec())
-                    if self._dynamic_proof_executor.execution_complete:
-                        break
+        # elif isinstance(self._dynamic_proof_executor, DynamicIsabelleProofExecutor):
+        #     while not self._dynamic_proof_executor.execution_complete and not lemma_found:
+        #         assert not self._dynamic_proof_executor.is_in_proof_mode(), "executor must not be in proof mode"
+        #         _ = list(self._dynamic_proof_executor.run_till_next_lemma_return_exec_stmt())
+        #         if self._dynamic_proof_executor.execution_complete:
+        #             break
+        #         lemma_name = self._dynamic_proof_executor.get_lemma_name_if_running()
+        #         if lemma_name is not None:
+        #             lemma_name = lemma_name.strip()
+        #         lemma_found = lemma_name.startswith(self.lemma_name) if lemma_name is not None else False
+        #         if not lemma_found:
+        #             _ = list(self._dynamic_proof_executor.run_to_finish_lemma_return_exec())
+        #             if self._dynamic_proof_executor.execution_complete:
+        #                 break
         else:
             raise NotImplementedError(f"Proof executor {type(self._dynamic_proof_executor)} not implemented")
 
@@ -598,18 +598,18 @@ if __name__ == "__main__":
         raise Exception(f"Invalid input {inp} for choosing coq/lean/isabelle")
     logger = logging.getLogger(__name__)
 
-    if language == ProofAction.Language.ISABELLE:
-        IsabelleExecutor.start_server(port=17000)
-    try:
-        with ProofEnv("test", proof_exec_callback, theorem_name, max_proof_depth=10, always_retrieve_thms=always_retrieve_thms, logger=logger) as env:
-            done = env.done
-            action = scan_action(language)
-            while action.action_type != ProofAction.ActionType.EXIT and not done:
-                state, _, _, reward, done, info = env.step(action)
-                env.render()
-                if not done:
-                    action = scan_action(language)
-            pass
-    finally:
-        if language == ProofAction.Language.ISABELLE:
-            IsabelleExecutor.stop_server()
+    # if language == ProofAction.Language.ISABELLE:
+    #     IsabelleExecutor.start_server(port=17000)
+    # try:
+    with ProofEnv("test", proof_exec_callback, theorem_name, max_proof_depth=10, always_retrieve_thms=always_retrieve_thms, logger=logger) as env:
+        done = env.done
+        action = scan_action(language)
+        while action.action_type != ProofAction.ActionType.EXIT and not done:
+            state, _, _, reward, done, info = env.step(action)
+            env.render()
+            if not done:
+                action = scan_action(language)
+        pass
+    # finally:
+    #     if language == ProofAction.Language.ISABELLE:
+    #         IsabelleExecutor.stop_server()
