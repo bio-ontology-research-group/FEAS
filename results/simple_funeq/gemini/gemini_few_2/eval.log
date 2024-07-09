@@ -1,0 +1,1236 @@
+2024-06-30 15:37:17,440 - __main__ - INFO - Pid: 150882
+2024-06-30 15:37:17,444 - __main__ - INFO - Running Experiment: {
+    "env_settings": {
+        "name": "bm25_retrieval",
+        "retrieval_strategy": "BM25"
+    },
+    "prompt_settings": {
+        "name": "lean_few_shot",
+        "main_prompt": "data/prompts/baseline/simple-prompt-lean.md",
+        "conv_prompt": "data/prompts/baseline/simple-prompt-conv-lean.md",
+        "informal_proof_repo": null
+    },
+    "eval_settings": {
+        "name": "n_4_few_gemini",
+        "use_hammer": "ALLOW",
+        "setting_type": "Agent",
+        "max_proof_depth": 100,
+        "timeout_in_secs": 60,
+        "proof_retries": 1,
+        "max_tokens_per_action": 1000,
+        "max_theorems_in_prompt": 7,
+        "gpt_model_name": "gemini-1.5-pro",
+        "max_number_of_episodes": 1,
+        "max_steps_per_episode": 4,
+        "render": false,
+        "checkpoint_dir": ".log/checkpoints",
+        "should_checkpoint": false,
+        "temperature": 0.0,
+        "max_history_messages": 0,
+        "policy_name": "FewShot",
+        "proof_dump_dir": ".log/proofs/eval_driver/few_shot/gpt4_turbo",
+        "use_human_readable_proof_context": true,
+        "sample": 1.0,
+        "sample_seed": 3840,
+        "use_example_retrieval": false,
+        "always_use_useful_theorem_retrieval": false,
+        "num_goal_per_prompt": null
+    },
+    "benchmark": {
+        "name": "simple_funeq",
+        "num_files": 1,
+        "language": "LEAN",
+        "datasets": [
+            {
+                "project": "data/benchmarks/FunEq",
+                "files": [
+                    {
+                        "path": "src/dataset.lean",
+                        "theorems": [
+                            "simple_funeq_1",
+                            "simple_funeq_2",
+                            "simple_funeq_3",
+                            "simple_funeq_4",
+                            "simple_funeq_5",
+                            "simple_funeq_6",
+                            "simple_funeq_7",
+                            "simple_funeq_8",
+                            "simple_funeq_9",
+                            "simple_funeq_10",
+                            "simple_funeq_11",
+                            "simple_funeq_12",
+                            "simple_funeq_13",
+                            "simple_funeq_14",
+                            "simple_funeq_15",
+                            "simple_funeq_16",
+                            "simple_funeq_17",
+                            "simple_funeq_18"
+                        ],
+                        "max_retry_attempts_limits": {},
+                        "max_time_limits_in_secs": {}
+                    }
+                ]
+            }
+        ],
+        "few_shot_data_path_for_retrieval": null,
+        "few_shot_metadata_filename_for_retrieval": null,
+        "dfs_data_path_for_retrieval": null,
+        "dfs_metadata_filename_for_retrieval": null,
+        "timeout_per_theorem_in_secs": 720
+    }
+}
+2024-06-30 15:37:17,471 - __main__ - INFO - Getting all lemmas in file: data/benchmarks/FunEq/src/dataset.lean with timeout: 300000 seconds
+2024-06-30 15:37:19,663 - __main__ - INFO - Discovered 64 lemmas
+2024-06-30 15:37:19,673 - __main__ - INFO - Discovered 18 lemmas to prove in data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:37:19,673 - __main__ - INFO - Lemmas to prove in file data/benchmarks/FunEq/src/dataset.lean: 
+['simple_funeq_1', 'simple_funeq_2', 'simple_funeq_3', 'simple_funeq_4', 'simple_funeq_5', 'simple_funeq_6', 'simple_funeq_7', 'simple_funeq_8', 'simple_funeq_9', 'simple_funeq_10', 'simple_funeq_11', 'simple_funeq_12', 'simple_funeq_13', 'simple_funeq_14', 'simple_funeq_15', 'simple_funeq_16', 'simple_funeq_17', 'simple_funeq_18']
+2024-06-30 15:37:19,673 - __main__ - INFO - Attempting to prove lemma: simple_funeq_1
+2024-06-30 15:37:21,770 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:37:21,770 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_1 with timeout: 720 seconds
+2024-06-30 15:37:29,587 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:37:29,587 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:37:31,741 - __main__ - INFO - Requesting 1000 tokens to generate, 199 tokens in input.
+2024-06-30 15:37:31,741 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 3) :
+f(2) = 3 :=
+
+[END]
+2024-06-30 15:37:33,588 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 3) :
+f(2) = 3 :=
+h 2end
+2024-06-30 15:37:33,588 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x : ℝ, f(x) = 3) :\nf(2) = 3 :=\nh 2end']})
+2024-06-30 15:37:37,011 - __main__ - INFO - Updating policy
+2024-06-30 15:37:37,011 - __main__ - INFO - Policy updated
+2024-06-30 15:37:37,011 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:37:37,011 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:37:37,011 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:37:37,011 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:37:37,011 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_1
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 3) :
+f(2) = 3 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_1
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 3) :
+f(2) = 3 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 7.42450213432312
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:37:37,021 - __main__ - INFO - Prover for lemma: simple_funeq_1 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:37:37,030 - __main__ - INFO - Attempting to prove lemma: simple_funeq_2
+2024-06-30 15:37:38,075 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_2 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:37:38,076 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_2 with timeout: 720 seconds
+2024-06-30 15:37:45,754 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:37:45,754 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:37:47,897 - __main__ - INFO - Requesting 1000 tokens to generate, 221 tokens in input.
+2024-06-30 15:37:47,897 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x : ℝ, f(x + 1) = f(x) + 2) :
+f(1) = 2 :=
+
+[END]
+2024-06-30 15:37:50,103 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  calc
+  f 1 = f (0 + 1) : by rw zero_add 1
+  ... = f 0 + 2 : by rw h₁
+  ... = 0 + 2 : by rw h₀
+  ... = 2 : by rw zero_add,
+end
+2024-06-30 15:37:50,103 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  calc\n  f 1 = f (0 + 1) : by rw zero_add 1\n  ... = f 0 + 2 : by rw h₁\n  ... = 0 + 2 : by rw h₀\n  ... = 2 : by rw zero_add,\nend']})
+2024-06-30 15:37:54,678 - __main__ - INFO - Updating policy
+2024-06-30 15:37:54,678 - __main__ - INFO - Policy updated
+2024-06-30 15:37:54,678 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:37:54,678 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:37:54,678 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:37:54,678 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:37:54,679 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_2
+(f : ℝ → ℝ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x : ℝ, f(x + 1) = f(x) + 2) :
+f(1) = 2 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_2
+(f : ℝ → ℝ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x : ℝ, f(x + 1) = f(x) + 2) :
+f(1) = 2 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 8.925269842147827
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:37:54,691 - __main__ - INFO - Prover for lemma: simple_funeq_2 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:37:54,700 - __main__ - INFO - Attempting to prove lemma: simple_funeq_3
+2024-06-30 15:37:56,562 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_3 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:37:56,562 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_3 with timeout: 720 seconds
+2024-06-30 15:38:04,490 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:38:04,490 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:38:06,585 - __main__ - INFO - Requesting 1000 tokens to generate, 204 tokens in input.
+2024-06-30 15:38:06,586 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) + 3 = 4 * x) :
+f(1) = 1 :=
+
+[END]
+2024-06-30 15:38:08,176 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  calc
+  f 1 = 4 * 1 - 3 : by { rw h 1 }
+  ... = 1 : by ring,
+end
+2024-06-30 15:38:08,176 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  calc\n  f 1 = 4 * 1 - 3 : by { rw h 1 }\n  ... = 1 : by ring,\nend']})
+2024-06-30 15:38:11,698 - __main__ - INFO - Updating policy
+2024-06-30 15:38:11,698 - __main__ - INFO - Policy updated
+2024-06-30 15:38:11,698 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:38:11,698 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:38:11,698 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:38:11,698 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:38:11,699 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_3
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) + 3 = 4 * x) :
+f(1) = 1 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_3
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) + 3 = 4 * x) :
+f(1) = 1 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 7.20920729637146
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:38:11,707 - __main__ - INFO - Prover for lemma: simple_funeq_3 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:38:11,715 - __main__ - INFO - Attempting to prove lemma: simple_funeq_4
+2024-06-30 15:38:13,525 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_4 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:38:13,526 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_4 with timeout: 720 seconds
+2024-06-30 15:38:20,631 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:38:20,631 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:38:23,203 - __main__ - INFO - Requesting 1000 tokens to generate, 223 tokens in input.
+2024-06-30 15:38:23,203 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : f(-1) = -1)
+(h₁ : ∀ x : ℝ, f(x) + 2 * f(-x) = 3 * x) :
+f(1) = 5 :=
+
+[END]
+2024-06-30 15:38:26,061 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : f(-1) = -1)
+(h₁ : ∀ x : ℝ, f(x) + 2 * f(-x) = 3 * x) :
+f(1) = 5 :=
+begin
+  specialize h₁ 1,
+  rw [h₀, mul_one] at h₁,
+  linarith,
+end
+2024-06-30 15:38:26,061 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : f(-1) = -1)\n(h₁ : ∀ x : ℝ, f(x) + 2 * f(-x) = 3 * x) :\nf(1) = 5 :=\nbegin\n  specialize h₁ 1,\n  rw [h₀, mul_one] at h₁,\n  linarith,\nend']})
+2024-06-30 15:38:30,286 - __main__ - INFO - Updating policy
+2024-06-30 15:38:30,286 - __main__ - INFO - Policy updated
+2024-06-30 15:38:30,286 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:38:30,286 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:38:30,286 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:38:30,286 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:38:30,287 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_4
+(f : ℝ → ℝ)
+(h₀ : f(-1) = -1)
+(h₁ : ∀ x : ℝ, f(x) + 2 * f(-x) = 3 * x) :
+f(1) = 5 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_4
+(f : ℝ → ℝ)
+(h₀ : f(-1) = -1)
+(h₁ : ∀ x : ℝ, f(x) + 2 * f(-x) = 3 * x) :
+f(1) = 5 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 9.656447887420654
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:38:30,297 - __main__ - INFO - Prover for lemma: simple_funeq_4 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:38:30,302 - __main__ - INFO - Attempting to prove lemma: simple_funeq_5
+2024-06-30 15:38:32,129 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_5 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:38:32,129 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_5 with timeout: 720 seconds
+2024-06-30 15:38:40,206 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:38:40,206 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:38:42,168 - __main__ - INFO - Requesting 1000 tokens to generate, 200 tokens in input.
+2024-06-30 15:38:42,168 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^2) :
+f(3) = 9 :=
+
+[END]
+2024-06-30 15:38:43,260 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  rw h,
+  ring,
+end
+2024-06-30 15:38:43,260 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  rw h,\n  ring,\nend']})
+2024-06-30 15:38:47,163 - __main__ - INFO - Updating policy
+2024-06-30 15:38:47,163 - __main__ - INFO - Policy updated
+2024-06-30 15:38:47,163 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_5
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^2) :
+f(3) = 9 :=
+begin
+    
+    rw h,
+  ring,
+end
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_5
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^2) :
+f(3) = 9 :=
+SearchResult: [SUCCESS]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 6.957692384719849
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:38:47,175 - __main__ - INFO - Prover for lemma: simple_funeq_5 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:38:47,186 - __main__ - INFO - Attempting to prove lemma: simple_funeq_6
+2024-06-30 15:38:49,093 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_6 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:38:49,093 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_6 with timeout: 720 seconds
+2024-06-30 15:38:56,836 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:38:56,837 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:39:00,074 - __main__ - INFO - Requesting 1000 tokens to generate, 208 tokens in input.
+2024-06-30 15:39:00,075 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x + y) = f(x) + f(y)) :
+f(0) = 0 :=
+
+[END]
+2024-06-30 15:39:01,976 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  calc
+  f(0) = f(0 + 0) : by rw add_zero 0
+     ... = f(0) + f(0) : by rw h
+     ... = 0 : by linarith,
+end
+2024-06-30 15:39:01,976 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  calc\n  f(0) = f(0 + 0) : by rw add_zero 0\n     ... = f(0) + f(0) : by rw h\n     ... = 0 : by linarith,\nend']})
+2024-06-30 15:39:05,399 - __main__ - INFO - Updating policy
+2024-06-30 15:39:05,399 - __main__ - INFO - Policy updated
+2024-06-30 15:39:05,399 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:39:05,399 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:39:05,399 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:39:05,399 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:39:05,400 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_6
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x + y) = f(x) + f(y)) :
+f(0) = 0 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_6
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x + y) = f(x) + f(y)) :
+f(0) = 0 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 8.563551902770996
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:39:05,408 - __main__ - INFO - Prover for lemma: simple_funeq_6 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:39:05,417 - __main__ - INFO - Attempting to prove lemma: simple_funeq_7
+2024-06-30 15:39:07,354 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_7 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:39:07,354 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_7 with timeout: 720 seconds
+2024-06-30 15:39:15,573 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:39:15,573 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:39:17,270 - __main__ - INFO - Requesting 1000 tokens to generate, 218 tokens in input.
+2024-06-30 15:39:17,270 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(a : ℝ)
+(h₀ : f(0) = 3)
+(h₁ : ∀ x : ℝ, f(x) = x + a) :
+a = 3 :=
+
+[END]
+2024-06-30 15:39:18,845 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  have h₂ : f(0) = 0 + a := h₁ 0,
+  linarith [h₀, h₂],
+end
+2024-06-30 15:39:18,845 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  have h₂ : f(0) = 0 + a := h₁ 0,\n  linarith [h₀, h₂],\nend']})
+2024-06-30 15:39:22,774 - __main__ - INFO - Updating policy
+2024-06-30 15:39:22,774 - __main__ - INFO - Policy updated
+2024-06-30 15:39:22,774 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_7
+(f : ℝ → ℝ)
+(a : ℝ)
+(h₀ : f(0) = 3)
+(h₁ : ∀ x : ℝ, f(x) = x + a) :
+a = 3 :=
+begin
+    
+    have h₂ : f(0) = 0 + a := h₁ 0,
+  linarith [h₀, h₂],
+end
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_7
+(f : ℝ → ℝ)
+(a : ℝ)
+(h₀ : f(0) = 3)
+(h₁ : ∀ x : ℝ, f(x) = x + a) :
+a = 3 :=
+SearchResult: [SUCCESS]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 7.2010955810546875
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:39:22,785 - __main__ - INFO - Prover for lemma: simple_funeq_7 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:39:22,793 - __main__ - INFO - Attempting to prove lemma: simple_funeq_8
+2024-06-30 15:39:24,337 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_8 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:39:24,337 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_8 with timeout: 720 seconds
+2024-06-30 15:39:32,241 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:39:32,241 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:39:34,507 - __main__ - INFO - Requesting 1000 tokens to generate, 219 tokens in input.
+2024-06-30 15:39:34,507 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^2 - 2 * x + 1) :
+∀ x : ℝ, f(x) = (x - 1)^2 :=
+
+[END]
+2024-06-30 15:39:35,804 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  intro x,
+  rw h,
+  ring,
+end
+2024-06-30 15:39:35,804 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  intro x,\n  rw h,\n  ring,\nend']})
+2024-06-30 15:39:39,627 - __main__ - INFO - Updating policy
+2024-06-30 15:39:39,628 - __main__ - INFO - Policy updated
+2024-06-30 15:39:39,628 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_8
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^2 - 2 * x + 1) :
+∀ x : ℝ, f(x) = (x - 1)^2 :=
+begin
+    
+    intro x,
+  rw h,
+  ring,
+end
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_8
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^2 - 2 * x + 1) :
+∀ x : ℝ, f(x) = (x - 1)^2 :=
+SearchResult: [SUCCESS]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 7.387423276901245
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:39:39,638 - __main__ - INFO - Prover for lemma: simple_funeq_8 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:39:39,645 - __main__ - INFO - Attempting to prove lemma: simple_funeq_9
+2024-06-30 15:39:41,202 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_9 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:39:41,202 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_9 with timeout: 720 seconds
+2024-06-30 15:39:49,869 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:39:49,869 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:39:51,276 - __main__ - INFO - Requesting 1000 tokens to generate, 213 tokens in input.
+2024-06-30 15:39:51,276 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x * (x + 1)) :
+∀ x : ℝ, f(x) = x^2 + x :=
+
+[END]
+2024-06-30 15:39:53,166 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  intro x,
+  rw h,
+  ring,
+end
+2024-06-30 15:39:53,167 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  intro x,\n  rw h,\n  ring,\nend']})
+2024-06-30 15:39:56,940 - __main__ - INFO - Updating policy
+2024-06-30 15:39:56,941 - __main__ - INFO - Policy updated
+2024-06-30 15:39:56,941 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_9
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x * (x + 1)) :
+∀ x : ℝ, f(x) = x^2 + x :=
+begin
+    
+    intro x,
+  rw h,
+  ring,
+end
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_9
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x * (x + 1)) :
+∀ x : ℝ, f(x) = x^2 + x :=
+SearchResult: [SUCCESS]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 7.0723044872283936
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:39:56,952 - __main__ - INFO - Prover for lemma: simple_funeq_9 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:39:56,962 - __main__ - INFO - Attempting to prove lemma: simple_funeq_10
+2024-06-30 15:39:58,643 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_10 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:39:58,643 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_10 with timeout: 720 seconds
+2024-06-30 15:40:06,835 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:40:06,836 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:40:09,307 - __main__ - INFO - Requesting 1000 tokens to generate, 217 tokens in input.
+2024-06-30 15:40:09,307 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 3 * x - 4) :
+∀ x : ℝ, f(2 * x) = 6 * x - 4 :=
+
+[END]
+2024-06-30 15:40:11,156 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  intro x,
+  calc f (2 * x) = 3 * (2 * x) - 4 : by rw h
+  ... = 6 * x - 4 : by ring,
+end
+2024-06-30 15:40:11,157 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  intro x,\n  calc f (2 * x) = 3 * (2 * x) - 4 : by rw h\n  ... = 6 * x - 4 : by ring,\nend']})
+2024-06-30 15:40:15,232 - __main__ - INFO - Updating policy
+2024-06-30 15:40:15,233 - __main__ - INFO - Policy updated
+2024-06-30 15:40:15,233 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_10
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 3 * x - 4) :
+∀ x : ℝ, f(2 * x) = 6 * x - 4 :=
+begin
+    
+    intro x,
+  calc f (2 * x) = 3 * (2 * x) - 4 : by rw h
+  ... = 6 * x - 4 : by ring,
+end
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_10
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 3 * x - 4) :
+∀ x : ℝ, f(2 * x) = 6 * x - 4 :=
+SearchResult: [SUCCESS]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 8.397932052612305
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:40:15,243 - __main__ - INFO - Prover for lemma: simple_funeq_10 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:40:15,253 - __main__ - INFO - Attempting to prove lemma: simple_funeq_11
+2024-06-30 15:40:17,142 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_11 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:40:17,142 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_11 with timeout: 720 seconds
+2024-06-30 15:40:24,548 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:40:24,548 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:40:26,633 - __main__ - INFO - Requesting 1000 tokens to generate, 209 tokens in input.
+2024-06-30 15:40:26,633 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^3) :
+∀ x : ℝ, f(-x) = -f(x) :=
+
+[END]
+2024-06-30 15:40:28,993 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^3) :
+∀ x : ℝ, f(-x) = -f(x) :=
+begin
+  intro x,
+  rw h,
+  rw h,
+  ring,
+end
+2024-06-30 15:40:28,993 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x : ℝ, f(x) = x^3) :\n∀ x : ℝ, f(-x) = -f(x) :=\nbegin\n  intro x,\n  rw h,\n  rw h,\n  ring,\nend']})
+2024-06-30 15:40:32,666 - __main__ - INFO - Updating policy
+2024-06-30 15:40:32,666 - __main__ - INFO - Policy updated
+2024-06-30 15:40:32,667 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:40:32,667 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:40:32,667 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:40:32,667 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:40:32,667 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_11
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^3) :
+∀ x : ℝ, f(-x) = -f(x) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_11
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^3) :
+∀ x : ℝ, f(-x) = -f(x) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 8.119436502456665
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:40:32,676 - __main__ - INFO - Prover for lemma: simple_funeq_11 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:40:32,686 - __main__ - INFO - Attempting to prove lemma: simple_funeq_12
+2024-06-30 15:40:34,532 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_12 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:40:34,533 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_12 with timeout: 720 seconds
+2024-06-30 15:40:42,807 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:40:42,808 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:40:44,050 - __main__ - INFO - Requesting 1000 tokens to generate, 211 tokens in input.
+2024-06-30 15:40:44,050 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^3 - x) :
+∀ x : ℝ, f(-x) = -f(x) :=
+
+[END]
+2024-06-30 15:40:47,694 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^3 - x) :
+∀ x : ℝ, f(-x) = -f(x) :=
+begin
+  intro x,
+  calc f (-x) = (-x)^3 - (-x) : by rw h
+  ... = - (x^3 - x) : by ring
+  ... = - f x : by rw h,
+end
+2024-06-30 15:40:47,695 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x : ℝ, f(x) = x^3 - x) :\n∀ x : ℝ, f(-x) = -f(x) :=\nbegin\n  intro x,\n  calc f (-x) = (-x)^3 - (-x) : by rw h\n  ... = - (x^3 - x) : by ring\n  ... = - f x : by rw h,\nend']})
+2024-06-30 15:40:51,468 - __main__ - INFO - Updating policy
+2024-06-30 15:40:51,468 - __main__ - INFO - Policy updated
+2024-06-30 15:40:51,468 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:40:51,468 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:40:51,468 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:40:51,468 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:40:51,468 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_12
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^3 - x) :
+∀ x : ℝ, f(-x) = -f(x) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_12
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x^3 - x) :
+∀ x : ℝ, f(-x) = -f(x) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 8.6616530418396
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:40:51,479 - __main__ - INFO - Prover for lemma: simple_funeq_12 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:40:51,488 - __main__ - INFO - Attempting to prove lemma: simple_funeq_13
+2024-06-30 15:40:53,221 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_13 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:40:53,222 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_13 with timeout: 720 seconds
+2024-06-30 15:41:01,657 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:41:01,657 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:41:02,897 - __main__ - INFO - Requesting 1000 tokens to generate, 229 tokens in input.
+2024-06-30 15:41:02,897 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x + 1) :
+∀ x y : ℝ, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2 :=
+
+[END]
+2024-06-30 15:41:07,017 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  intros x y,
+  calc f((x - y)^2) = (x - y)^2 + 1 : by rw h
+  ... = x^2 - 2*x*y + y^2 + 1 : by ring
+  ... = (x + 1)^2 - 2*x*(y + 1) + y^2 : by ring
+  ... = f(x)^2 - 2*x*f(y) + y^2 : by rw h,
+end
+2024-06-30 15:41:07,018 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  intros x y,\n  calc f((x - y)^2) = (x - y)^2 + 1 : by rw h\n  ... = x^2 - 2*x*y + y^2 + 1 : by ring\n  ... = (x + 1)^2 - 2*x*(y + 1) + y^2 : by ring\n  ... = f(x)^2 - 2*x*f(y) + y^2 : by rw h,\nend']})
+2024-06-30 15:41:10,791 - __main__ - INFO - Updating policy
+2024-06-30 15:41:10,791 - __main__ - INFO - Policy updated
+2024-06-30 15:41:10,791 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:41:10,792 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:41:10,792 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:41:10,792 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:41:10,792 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_13
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x + 1) :
+∀ x y : ℝ, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2 :=
+begin
+    
+    intros x y,
+  calc f((x - y)^2) = (x - y)^2 + 1 : by rw h
+  ... = x^2 - 2*x*y + y^2 + 1 : by ring
+  ... = (x + 1)^2 - 2*x*(y + 1) + y^2 : by ring
+  ... = f(x)^2 - 2*x*f(y) + y^2 : by rw h,
+end
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_13
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = x + 1) :
+∀ x y : ℝ, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 9.135262966156006
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:41:10,801 - __main__ - INFO - Prover for lemma: simple_funeq_13 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:41:10,808 - __main__ - INFO - Attempting to prove lemma: simple_funeq_14
+2024-06-30 15:41:12,450 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_14 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:41:12,450 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_14 with timeout: 720 seconds
+2024-06-30 15:41:20,428 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:41:20,429 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:41:22,083 - __main__ - INFO - Requesting 1000 tokens to generate, 217 tokens in input.
+2024-06-30 15:41:22,083 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x + y) = f(x) + f(y)) :
+∀ x : ℝ, f(x) = -f(-x) :=
+
+[END]
+2024-06-30 15:41:27,952 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  intro x,
+  calc
+    f (x) = f (x + 0) : by rw add_zero x
+       ... = f (x) + f (0) : by rw h
+       ... = f (x) + f (0 + -0) : by rw add_zero (-0)
+       ... = f (x) + (f (0) + f (-0)) : by rw h
+       ... = (f (x) + f (0)) + f (-0) : by rw add_assoc
+       ... = f (x) + f (-0) : by rw add_zero f (0)
+       ... = f (x + -x) : by rw h
+       ... = f (0) : by rw add_left_neg
+       ... = f (x + -x) : by rw add_left_neg
+       ... = f (x) + f (-x) : by rw h,
+  rw add_left_eq_self at _,
+  exact eq.symm (neg_eq_of_add_eq_zero this),
+end
+2024-06-30 15:41:27,952 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  intro x,\n  calc\n    f (x) = f (x + 0) : by rw add_zero x\n       ... = f (x) + f (0) : by rw h\n       ... = f (x) + f (0 + -0) : by rw add_zero (-0)\n       ... = f (x) + (f (0) + f (-0)) : by rw h\n       ... = (f (x) + f (0)) + f (-0) : by rw add_assoc\n       ... = f (x) + f (-0) : by rw add_zero f (0)\n       ... = f (x + -x) : by rw h\n       ... = f (0) : by rw add_left_neg\n       ... = f (x + -x) : by rw add_left_neg\n       ... = f (x) + f (-x) : by rw h,\n  rw add_left_eq_self at _,\n  exact eq.symm (neg_eq_of_add_eq_zero this),\nend']})
+2024-06-30 15:41:31,790 - __main__ - INFO - Updating policy
+2024-06-30 15:41:31,790 - __main__ - INFO - Policy updated
+2024-06-30 15:41:31,790 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:41:31,790 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:41:31,790 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:41:31,790 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:41:31,791 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_14
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x + y) = f(x) + f(y)) :
+∀ x : ℝ, f(x) = -f(-x) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_14
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x + y) = f(x) + f(y)) :
+∀ x : ℝ, f(x) = -f(-x) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 11.36292052268982
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:41:31,800 - __main__ - INFO - Prover for lemma: simple_funeq_14 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:41:31,809 - __main__ - INFO - Attempting to prove lemma: simple_funeq_15
+2024-06-30 15:41:33,531 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_15 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:41:33,531 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_15 with timeout: 720 seconds
+2024-06-30 15:41:41,327 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:41:41,327 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:41:43,430 - __main__ - INFO - Requesting 1000 tokens to generate, 208 tokens in input.
+2024-06-30 15:41:43,430 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 7 - x) :
+∀ x : ℝ, f(f(x)) = x :=
+
+[END]
+2024-06-30 15:41:44,689 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  intro x,
+  rw h,
+  rw h,
+  ring,
+end
+2024-06-30 15:41:44,689 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  intro x,\n  rw h,\n  rw h,\n  ring,\nend']})
+2024-06-30 15:41:48,312 - __main__ - INFO - Updating policy
+2024-06-30 15:41:48,312 - __main__ - INFO - Policy updated
+2024-06-30 15:41:48,312 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_15
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 7 - x) :
+∀ x : ℝ, f(f(x)) = x :=
+begin
+    
+    intro x,
+  rw h,
+  rw h,
+  ring,
+end
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_15
+(f : ℝ → ℝ)
+(h : ∀ x : ℝ, f(x) = 7 - x) :
+∀ x : ℝ, f(f(x)) = x :=
+SearchResult: [SUCCESS]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 6.986026048660278
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:41:48,323 - __main__ - INFO - Prover for lemma: simple_funeq_15 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:41:48,331 - __main__ - INFO - Attempting to prove lemma: simple_funeq_16
+2024-06-30 15:41:50,747 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_16 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:41:50,747 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_16 with timeout: 720 seconds
+2024-06-30 15:41:58,990 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:41:58,990 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:42:01,493 - __main__ - INFO - Requesting 1000 tokens to generate, 217 tokens in input.
+2024-06-30 15:42:01,493 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x * y) = f(x) * f(y)) :
+f(1) = 0 ∨ f(1) = 1 :=
+
+[END]
+2024-06-30 15:42:05,662 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  have h1 : f(1) = f(1 * 1) := by rw mul_one,
+  have h2 : f(1 * 1) = f(1) * f(1) := h 1 1,
+  rw h1 at h2,
+  have h3 : f(1) - (f(1) * f(1)) = 0 := by linarith,
+  rw ← mul_one f(1) at h3,
+  have h4 : f(1) * (1 - f(1)) = 0 := by ring,
+  cases h4 with h5 h6,
+  { right,
+    exact h6 },
+  { left,
+    exact h5 },
+end
+2024-06-30 15:42:05,662 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  have h1 : f(1) = f(1 * 1) := by rw mul_one,\n  have h2 : f(1 * 1) = f(1) * f(1) := h 1 1,\n  rw h1 at h2,\n  have h3 : f(1) - (f(1) * f(1)) = 0 := by linarith,\n  rw ← mul_one f(1) at h3,\n  have h4 : f(1) * (1 - f(1)) = 0 := by ring,\n  cases h4 with h5 h6,\n  { right,\n    exact h6 },\n  { left,\n    exact h5 },\nend']})
+2024-06-30 15:42:09,486 - __main__ - INFO - Updating policy
+2024-06-30 15:42:09,487 - __main__ - INFO - Policy updated
+2024-06-30 15:42:09,488 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:42:09,488 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:42:09,488 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:42:09,488 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:42:09,488 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_16
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x * y) = f(x) * f(y)) :
+f(1) = 0 ∨ f(1) = 1 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_16
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f(x * y) = f(x) * f(y)) :
+f(1) = 0 ∨ f(1) = 1 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 10.498473882675171
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:42:09,497 - __main__ - INFO - Prover for lemma: simple_funeq_16 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:42:09,507 - __main__ - INFO - Attempting to prove lemma: simple_funeq_17
+2024-06-30 15:42:11,133 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_17 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:11,133 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_17 with timeout: 720 seconds
+2024-06-30 15:42:19,084 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:42:19,084 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:42:20,863 - __main__ - INFO - Requesting 1000 tokens to generate, 230 tokens in input.
+2024-06-30 15:42:20,863 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2) :
+f(0) = 0 ∨ f(0) = 1 :=
+
+[END]
+2024-06-30 15:42:23,605 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  have h1 : f(0) = f(1)^2 - 2 * 1 * f(0) + 0^2 := h 1 0,
+  have h2 : f(0) = f(0)^2 - 2 * 0 * f(1) + 1^2 := h 0 1,
+  linarith [h1, h2],
+end
+2024-06-30 15:42:23,605 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  have h1 : f(0) = f(1)^2 - 2 * 1 * f(0) + 0^2 := h 1 0,\n  have h2 : f(0) = f(0)^2 - 2 * 0 * f(1) + 1^2 := h 0 1,\n  linarith [h1, h2],\nend']})
+2024-06-30 15:42:27,027 - __main__ - INFO - Updating policy
+2024-06-30 15:42:27,028 - __main__ - INFO - Policy updated
+2024-06-30 15:42:27,028 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:42:27,028 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:42:27,028 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:42:27,028 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:42:27,028 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_17
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2) :
+f(0) = 0 ∨ f(0) = 1 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_17
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2) :
+f(0) = 0 ∨ f(0) = 1 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 7.944795370101929
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:42:27,037 - __main__ - INFO - Prover for lemma: simple_funeq_17 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:42:27,046 - __main__ - INFO - Attempting to prove lemma: simple_funeq_18
+2024-06-30 15:42:28,634 - __main__ - INFO - Attempt 1 for proving lemma: simple_funeq_18 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:28,635 - __main__ - INFO - Running the prover agent for lemma: simple_funeq_18 with timeout: 720 seconds
+2024-06-30 15:42:36,001 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-06-30 15:42:36,001 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:42:37,565 - __main__ - INFO - Requesting 1000 tokens to generate, 226 tokens in input.
+2024-06-30 15:42:37,565 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℕ → ℕ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x : ℕ, f(x + 1) = f(x) + 1) :
+∀ n : ℕ, f(n) = n :=
+
+[END]
+2024-06-30 15:42:39,365 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+
+  intro n,
+  induction n with n ih,
+  { exact h₀ },
+  { rw [h₁, ih],
+    refl, },
+end
+2024-06-30 15:42:39,365 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['\n  intro n,\n  induction n with n ih,\n  { exact h₀ },\n  { rw [h₁, ih],\n    refl, },\nend']})
+2024-06-30 15:42:42,888 - __main__ - INFO - Updating policy
+2024-06-30 15:42:42,888 - __main__ - INFO - Policy updated
+2024-06-30 15:42:42,888 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-06-30 15:42:42,888 - __main__ - INFO - Asking policy for next action
+2024-06-30 15:42:42,888 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-06-30 15:42:42,888 - __main__ - WARNING - Got EXIT action, exiting
+2024-06-30 15:42:42,888 - __main__ - INFO - Dumping proof search result:
+theorem simple_funeq_18
+(f : ℕ → ℕ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x : ℕ, f(x + 1) = f(x) + 1) :
+∀ n : ℕ, f(n) = n :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem simple_funeq_18
+(f : ℕ → ℕ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x : ℕ, f(x + 1) = f(x) + 1) :
+∀ n : ℕ, f(n) = n :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 6.887599468231201
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-06-30 15:42:42,900 - __main__ - INFO - Prover for lemma: simple_funeq_18 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-06-30 15:42:42,921 - __main__ - INFO - Proof not found for lemma: simple_funeq_1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,921 - __main__ - INFO - Proof not found for lemma: simple_funeq_2 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,921 - __main__ - INFO - Proof not found for lemma: simple_funeq_3 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,921 - __main__ - INFO - Proof not found for lemma: simple_funeq_4 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,921 - __main__ - INFO - Proof found for lemma: simple_funeq_5 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,921 - __main__ - INFO - Proof not found for lemma: simple_funeq_6 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof found for lemma: simple_funeq_7 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof found for lemma: simple_funeq_8 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof found for lemma: simple_funeq_9 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof found for lemma: simple_funeq_10 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof not found for lemma: simple_funeq_11 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof not found for lemma: simple_funeq_12 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof not found for lemma: simple_funeq_13 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof not found for lemma: simple_funeq_14 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof found for lemma: simple_funeq_15 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,922 - __main__ - INFO - Proof not found for lemma: simple_funeq_16 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,923 - __main__ - INFO - Proof not found for lemma: simple_funeq_17 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,923 - __main__ - INFO - Proof not found for lemma: simple_funeq_18 in file data/benchmarks/FunEq/src/dataset.lean
+2024-06-30 15:42:42,923 - __main__ - INFO - Success rate: 6/18 = 0.3333333333333333 for benchmark: simple_funeq
+2024-06-30 15:42:42,925 - __main__ - INFO - Finished running experiment: 
+{
+    "env_settings": {
+        "name": "bm25_retrieval",
+        "retrieval_strategy": "BM25"
+    },
+    "prompt_settings": {
+        "name": "lean_few_shot",
+        "main_prompt": "data/prompts/baseline/simple-prompt-lean.md",
+        "conv_prompt": "data/prompts/baseline/simple-prompt-conv-lean.md",
+        "informal_proof_repo": null
+    },
+    "eval_settings": {
+        "name": "n_4_few_gemini",
+        "use_hammer": "ALLOW",
+        "setting_type": "Agent",
+        "max_proof_depth": 100,
+        "timeout_in_secs": 60,
+        "proof_retries": 1,
+        "max_tokens_per_action": 1000,
+        "max_theorems_in_prompt": 7,
+        "gpt_model_name": "gemini-1.5-pro",
+        "max_number_of_episodes": 1,
+        "max_steps_per_episode": 4,
+        "render": false,
+        "checkpoint_dir": ".log/checkpoints/simple_funeq/n_4_few_gemini/lean_few_shot",
+        "should_checkpoint": false,
+        "temperature": 0.0,
+        "max_history_messages": 0,
+        "policy_name": "FewShot",
+        "proof_dump_dir": ".log/proofs/eval_driver/few_shot/gpt4_turbo/simple_funeq/20240630-152318",
+        "use_human_readable_proof_context": true,
+        "sample": 1.0,
+        "sample_seed": 3840,
+        "use_example_retrieval": false,
+        "always_use_useful_theorem_retrieval": false,
+        "num_goal_per_prompt": null
+    },
+    "benchmark": {
+        "name": "simple_funeq",
+        "num_files": 1,
+        "language": "LEAN",
+        "datasets": [
+            {
+                "project": "data/benchmarks/FunEq",
+                "files": [
+                    {
+                        "path": "src/dataset.lean",
+                        "theorems": [
+                            "simple_funeq_1",
+                            "simple_funeq_2",
+                            "simple_funeq_3",
+                            "simple_funeq_4",
+                            "simple_funeq_5",
+                            "simple_funeq_6",
+                            "simple_funeq_7",
+                            "simple_funeq_8",
+                            "simple_funeq_9",
+                            "simple_funeq_10",
+                            "simple_funeq_11",
+                            "simple_funeq_12",
+                            "simple_funeq_13",
+                            "simple_funeq_14",
+                            "simple_funeq_15",
+                            "simple_funeq_16",
+                            "simple_funeq_17",
+                            "simple_funeq_18"
+                        ],
+                        "max_retry_attempts_limits": {},
+                        "max_time_limits_in_secs": {}
+                    }
+                ]
+            }
+        ],
+        "few_shot_data_path_for_retrieval": null,
+        "few_shot_metadata_filename_for_retrieval": null,
+        "dfs_data_path_for_retrieval": null,
+        "dfs_metadata_filename_for_retrieval": null,
+        "timeout_per_theorem_in_secs": 720
+    }
+}

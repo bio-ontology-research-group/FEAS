@@ -1,0 +1,699 @@
+2024-07-03 20:52:04,917 - __main__ - INFO - Pid: 120668
+2024-07-03 20:52:04,919 - __main__ - INFO - Running Experiment: {
+    "env_settings": {
+        "name": "bm25_retrieval",
+        "retrieval_strategy": "BM25"
+    },
+    "prompt_settings": {
+        "name": "lean_few_shot",
+        "main_prompt": "data/prompts/baseline/simple-prompt-lean.md",
+        "conv_prompt": "data/prompts/baseline/simple-prompt-conv-lean.md",
+        "informal_proof_repo": null
+    },
+    "eval_settings": {
+        "name": "n_4_few_llama",
+        "use_hammer": "ALLOW",
+        "setting_type": "Agent",
+        "max_proof_depth": 100,
+        "timeout_in_secs": 60,
+        "proof_retries": 1,
+        "max_tokens_per_action": 1000,
+        "max_theorems_in_prompt": 7,
+        "gpt_model_name": "meta/meta-llama-3-70b-instruct",
+        "max_number_of_episodes": 1,
+        "max_steps_per_episode": 4,
+        "render": false,
+        "checkpoint_dir": ".log/checkpoints",
+        "should_checkpoint": false,
+        "temperature": 0.0,
+        "max_history_messages": 0,
+        "policy_name": "FewShot",
+        "proof_dump_dir": ".log/proofs/eval_driver/few_shot/gpt4_turbo",
+        "use_human_readable_proof_context": true,
+        "sample": 1.0,
+        "sample_seed": 3840,
+        "use_example_retrieval": false,
+        "always_use_useful_theorem_retrieval": false,
+        "num_goal_per_prompt": null
+    },
+    "benchmark": {
+        "name": "imo_a1_funeq",
+        "num_files": 1,
+        "language": "LEAN",
+        "datasets": [
+            {
+                "project": "data/benchmarks/FunEq",
+                "files": [
+                    {
+                        "path": "src/dataset.lean",
+                        "theorems": [
+                            "imo_2002_a1",
+                            "imo_2019_a1",
+                            "imo_2018_a1",
+                            "imo_2012_a1",
+                            "imo_2010_a1",
+                            "imo_2008_a1"
+                        ],
+                        "max_retry_attempts_limits": {},
+                        "max_time_limits_in_secs": {}
+                    }
+                ]
+            }
+        ],
+        "few_shot_data_path_for_retrieval": null,
+        "few_shot_metadata_filename_for_retrieval": null,
+        "dfs_data_path_for_retrieval": null,
+        "dfs_metadata_filename_for_retrieval": null,
+        "timeout_per_theorem_in_secs": 720
+    }
+}
+2024-07-03 20:52:04,935 - __main__ - INFO - Getting all lemmas in file: data/benchmarks/FunEq/src/dataset.lean with timeout: 300000 seconds
+2024-07-03 20:52:07,007 - __main__ - INFO - Discovered 64 lemmas
+2024-07-03 20:52:07,013 - __main__ - INFO - Discovered 6 lemmas to prove in data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:52:07,013 - __main__ - INFO - Lemmas to prove in file data/benchmarks/FunEq/src/dataset.lean: 
+['imo_2002_a1', 'imo_2019_a1', 'imo_2018_a1', 'imo_2012_a1', 'imo_2010_a1', 'imo_2008_a1']
+2024-07-03 20:52:07,013 - __main__ - INFO - Attempting to prove lemma: imo_2002_a1
+2024-07-03 20:52:08,262 - __main__ - INFO - Attempt 1 for proving lemma: imo_2002_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:52:08,262 - __main__ - INFO - Running the prover agent for lemma: imo_2002_a1 with timeout: 720 seconds
+2024-07-03 20:52:21,919 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-03 20:52:21,920 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:52:23,664 - __main__ - INFO - Requesting 1000 tokens to generate, 228 tokens in input.
+2024-07-03 20:52:23,664 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f (f (x) + y) = 2 * x + f (f (y) - x)) :
+∀ c : ℝ, ∀ x : ℝ, f x = x + c :=
+
+[END]
+2024-07-03 20:52:30,808 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f (f (x) + y) = 2 * x + f (f (y) - x)) :
+∀ c : ℝ, ∀ x : ℝ, f x = x + c :=
+begin
+  let c := f 0,
+  show ∀ x : ℝ, f x = x + c,
+  intro x,
+  have h1 : f (f x) = f x + c,
+  {
+    specialize h x 0,
+    rw [add_zero] at h,
+    exact h,
+  },
+  have h2 : f (f (-x)) = f (-x) - c,
+  {
+    specialize h (-x) x,
+    rw [add_neg_self, sub_neg_eq_add] at h,
+    exact h,
+  },
+  have h3 : f (f x + (-x)) = 2 * x + f (-x - x),
+  {
+    specialize h x (-x),
+    exact h,
+  },
+  rw [h1, h2, add_neg_self, mul_two, sub_neg_eq_add] at h3,
+  rw [add_assoc, add_comm c, add_assoc, add_comm c] at h3,
+  rw [add_left_cancel_iff] at h3,
+  exact h3,
+end
+2024-07-03 20:52:30,808 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x y : ℝ, f (f (x) + y) = 2 * x + f (f (y) - x)) :\n∀ c : ℝ, ∀ x : ℝ, f x = x + c :=\nbegin\n  let c := f 0,\n  show ∀ x : ℝ, f x = x + c,\n  intro x,\n  have h1 : f (f x) = f x + c,\n  {\n    specialize h x 0,\n    rw [add_zero] at h,\n    exact h,\n  },\n  have h2 : f (f (-x)) = f (-x) - c,\n  {\n    specialize h (-x) x,\n    rw [add_neg_self, sub_neg_eq_add] at h,\n    exact h,\n  },\n  have h3 : f (f x + (-x)) = 2 * x + f (-x - x),\n  {\n    specialize h x (-x),\n    exact h,\n  },\n  rw [h1, h2, add_neg_self, mul_two, sub_neg_eq_add] at h3,\n  rw [add_assoc, add_comm c, add_assoc, add_comm c] at h3,\n  rw [add_left_cancel_iff] at h3,\n  exact h3,\nend']})
+2024-07-03 20:52:34,433 - __main__ - INFO - Updating policy
+2024-07-03 20:52:34,433 - __main__ - INFO - Policy updated
+2024-07-03 20:52:34,433 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-03 20:52:34,434 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:52:34,434 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-03 20:52:34,434 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-03 20:52:34,434 - __main__ - INFO - Dumping proof search result:
+theorem imo_2002_a1
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f (f (x) + y) = 2 * x + f (f (y) - x)) :
+∀ c : ℝ, ∀ x : ℝ, f x = x + c :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem imo_2002_a1
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f (f (x) + y) = 2 * x + f (f (y) - x)) :
+∀ c : ℝ, ∀ x : ℝ, f x = x + c :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 12.514617204666138
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-03 20:52:34,442 - __main__ - INFO - Prover for lemma: imo_2002_a1 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-03 20:52:34,444 - __main__ - INFO - Attempting to prove lemma: imo_2019_a1
+2024-07-03 20:52:35,748 - __main__ - INFO - Attempt 1 for proving lemma: imo_2019_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:52:35,749 - __main__ - INFO - Running the prover agent for lemma: imo_2019_a1 with timeout: 720 seconds
+2024-07-03 20:52:44,113 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-03 20:52:44,113 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:52:45,427 - __main__ - INFO - Requesting 1000 tokens to generate, 241 tokens in input.
+2024-07-03 20:52:45,427 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℤ → ℤ)
+(h : ∀ a b : ℤ, f (2 * a) + 2 * f (b) = f (f (a + b))) :
+(∀ n : ℤ, f n = 0) ∨ (∀ n K : ℤ, f n = 2 * n + K) :=
+
+[END]
+2024-07-03 20:52:51,836 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℤ → ℤ)
+(h : ∀ a b : ℤ, f (2 * a) + 2 * f (b) = f (f (a + b))) :
+(∀ n : ℤ, f n = 0) ∨ (∀ n K : ℤ, f n = 2 * n + K) :=
+begin
+  by_cases h_case : (∀ n : ℤ, f n = 0),
+  { left, assumption },
+  { right,
+    have h1 : f 0 = 0, {
+      specialize h_case (f 0),
+      push_neg at h_case,
+      cases h_case,
+      { contradiction },
+      { assumption }
+    },
+    have h2 : ∀ n : ℤ, f n = f (n + 0), {
+      intro n,
+      rw add_zero
+    },
+    have h3 : ∀ n : ℤ, f n = f (f n), {
+      intro n,
+      specialize h 0 n,
+      rw [h1, mul_zero, mul_zero, add_zero] at h,
+      assumption
+    },
+    have h4 : ∀ n : ℤ, f n = 2 * n + f 0, {
+      intro n,
+      specialize h n 0,
+      rw [h2, h3, h1, mul_zero, add_zero]
+    },
+    use f 0,
+    intro n,
+    rw h4
+  }
+end
+2024-07-03 20:52:51,836 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℤ → ℤ)\n(h : ∀ a b : ℤ, f (2 * a) + 2 * f (b) = f (f (a + b))) :\n(∀ n : ℤ, f n = 0) ∨ (∀ n K : ℤ, f n = 2 * n + K) :=\nbegin\n  by_cases h_case : (∀ n : ℤ, f n = 0),\n  { left, assumption },\n  { right,\n    have h1 : f 0 = 0, {\n      specialize h_case (f 0),\n      push_neg at h_case,\n      cases h_case,\n      { contradiction },\n      { assumption }\n    },\n    have h2 : ∀ n : ℤ, f n = f (n + 0), {\n      intro n,\n      rw add_zero\n    },\n    have h3 : ∀ n : ℤ, f n = f (f n), {\n      intro n,\n      specialize h 0 n,\n      rw [h1, mul_zero, mul_zero, add_zero] at h,\n      assumption\n    },\n    have h4 : ∀ n : ℤ, f n = 2 * n + f 0, {\n      intro n,\n      specialize h n 0,\n      rw [h2, h3, h1, mul_zero, add_zero]\n    },\n    use f 0,\n    intro n,\n    rw h4\n  }\nend']})
+2024-07-03 20:52:55,210 - __main__ - INFO - Updating policy
+2024-07-03 20:52:55,210 - __main__ - INFO - Policy updated
+2024-07-03 20:52:55,210 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-03 20:52:55,210 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:52:55,210 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-03 20:52:55,210 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-03 20:52:55,210 - __main__ - INFO - Dumping proof search result:
+theorem imo_2019_a1
+(f : ℤ → ℤ)
+(h : ∀ a b : ℤ, f (2 * a) + 2 * f (b) = f (f (a + b))) :
+(∀ n : ℤ, f n = 0) ∨ (∀ n K : ℤ, f n = 2 * n + K) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem imo_2019_a1
+(f : ℤ → ℤ)
+(h : ∀ a b : ℤ, f (2 * a) + 2 * f (b) = f (f (a + b))) :
+(∀ n : ℤ, f n = 0) ∨ (∀ n K : ℤ, f n = 2 * n + K) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 11.098248958587646
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-03 20:52:55,218 - __main__ - INFO - Prover for lemma: imo_2019_a1 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-03 20:52:55,221 - __main__ - INFO - Attempting to prove lemma: imo_2018_a1
+2024-07-03 20:52:56,447 - __main__ - INFO - Attempt 1 for proving lemma: imo_2018_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:52:56,447 - __main__ - INFO - Running the prover agent for lemma: imo_2018_a1 with timeout: 720 seconds
+2024-07-03 20:53:05,552 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-03 20:53:05,552 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:53:07,252 - __main__ - INFO - Requesting 1000 tokens to generate, 251 tokens in input.
+2024-07-03 20:53:07,252 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℚ → ℚ)
+(h₀ : ∀ x, 0 < x → 0 < f x)
+(h₁ : ∀ x y, (0 < x ∧ 0 < y) → f (x^2 * f(y)^2) = f(x)^2 * f(y)) :
+∀ x, 0 < x → f x = 1 :=
+
+[END]
+2024-07-03 20:53:13,233 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℚ → ℚ)
+(h₀ : ∀ x, 0 < x → 0 < f x)
+(h₁ : ∀ x y, (0 < x ∧ 0 < y) → f (x^2 * f(y)^2) = f(x)^2 * f(y)) :
+∀ x, 0 < x → f x = 1 :=
+begin
+  intros x hx,
+  have h₂ : f x^2 = f x^2 * f 1, {
+    apply h₁,
+    split; linarith,
+  },
+  have h₃ : f 1 = 1, {
+    have h4 : 0 < f 1, {
+      apply h₀,
+      linarith,
+    },
+    have h5 : f 1^2 = f 1^2 * f 1, {
+      apply h₁,
+      split; linarith,
+    },
+    linarith,
+  },
+  rw h₃ at h₂,
+  have h₄ : f x^2 = f x^2 * 1, {
+    rw h₂,
+  },
+  have h₅ : f x^2 ≠ 0, {
+    apply h₀,
+    linarith,
+  },
+  have h₆ : f x^2 * 1 = f x^2, {
+    rw mul_one,
+  },
+  rw h₆ at h₄,
+  linarith,
+end
+2024-07-03 20:53:13,233 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℚ → ℚ)\n(h₀ : ∀ x, 0 < x → 0 < f x)\n(h₁ : ∀ x y, (0 < x ∧ 0 < y) → f (x^2 * f(y)^2) = f(x)^2 * f(y)) :\n∀ x, 0 < x → f x = 1 :=\nbegin\n  intros x hx,\n  have h₂ : f x^2 = f x^2 * f 1, {\n    apply h₁,\n    split; linarith,\n  },\n  have h₃ : f 1 = 1, {\n    have h4 : 0 < f 1, {\n      apply h₀,\n      linarith,\n    },\n    have h5 : f 1^2 = f 1^2 * f 1, {\n      apply h₁,\n      split; linarith,\n    },\n    linarith,\n  },\n  rw h₃ at h₂,\n  have h₄ : f x^2 = f x^2 * 1, {\n    rw h₂,\n  },\n  have h₅ : f x^2 ≠ 0, {\n    apply h₀,\n    linarith,\n  },\n  have h₆ : f x^2 * 1 = f x^2, {\n    rw mul_one,\n  },\n  rw h₆ at h₄,\n  linarith,\nend']})
+2024-07-03 20:53:16,656 - __main__ - INFO - Updating policy
+2024-07-03 20:53:16,657 - __main__ - INFO - Policy updated
+2024-07-03 20:53:16,657 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-03 20:53:16,657 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:53:16,657 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-03 20:53:16,657 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-03 20:53:16,657 - __main__ - INFO - Dumping proof search result:
+theorem imo_2018_a1
+(f : ℚ → ℚ)
+(h₀ : ∀ x, 0 < x → 0 < f x)
+(h₁ : ∀ x y, (0 < x ∧ 0 < y) → f (x^2 * f(y)^2) = f(x)^2 * f(y)) :
+∀ x, 0 < x → f x = 1 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem imo_2018_a1
+(f : ℚ → ℚ)
+(h₀ : ∀ x, 0 < x → 0 < f x)
+(h₁ : ∀ x y, (0 < x ∧ 0 < y) → f (x^2 * f(y)^2) = f(x)^2 * f(y)) :
+∀ x, 0 < x → f x = 1 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 11.10591721534729
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-03 20:53:16,665 - __main__ - INFO - Prover for lemma: imo_2018_a1 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-03 20:53:16,668 - __main__ - INFO - Attempting to prove lemma: imo_2012_a1
+2024-07-03 20:53:17,885 - __main__ - INFO - Attempt 1 for proving lemma: imo_2012_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:53:17,886 - __main__ - INFO - Running the prover agent for lemma: imo_2012_a1 with timeout: 720 seconds
+2024-07-03 20:53:28,252 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-03 20:53:28,253 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:53:29,795 - __main__ - INFO - Requesting 1000 tokens to generate, 381 tokens in input.
+2024-07-03 20:53:29,796 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℤ → ℤ)
+(h : ∀ a b c : ℤ, a + b + c = 0 → f (a)^2 + f (b)^2 + f (c)^2 = 2 * (f (a) * f (b) + f (b) * f (c) + f (c) * f (a))) :
+(∀ x : ℤ, f x = 0) ∨
+(∀ k : ℤ, k ≠ 0 → ((∀ x : ℤ, f x = k * x^2) ∨
+(∀ x : ℤ, (even x → f x = 0) ∧ (odd x → f x = k)) ∨
+(∀ x : ℤ, (x % 4 = 0 → f x = 0) ∧ (x % 4 = 1 → f x = k) ∧ (x % 4 = 2 → f x = 4 * k)))) :=
+
+[END]
+2024-07-03 20:53:47,263 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℤ → ℤ)
+(h : ∀ a b c : ℤ, a + b + c = 0 → f (a)^2 + f (b)^2 + f (c)^2 = 2 * (f (a) * f (b) + f (b) * f (c) + f (c) * f (a))) :
+(∀ x : ℤ, f x = 0) ∨
+(∀ k : ℤ, k ≠ 0 → ((∀ x : ℤ, f x = k * x^2) ∨
+(∀ x : ℤ, (even x → f x = 0) ∧ (odd x → f x = k)) ∨
+(∀ x : ℤ, (x % 4 = 0 → f x = 0) ∧ (x % 4 = 1 → f x = k) ∧ (x % 4 = 2 → f x = 4 * k))))
+
+:=
+begin
+  by_cases h_f_zero : (∀ x : ℤ, f x = 0),
+  { left, exact h_f_zero },
+  { right, push_neg at h_f_zero,
+    obtain ⟨k, hk⟩ := exists_ne_zero_of_not_forall_zero h_f_zero,
+    by_cases h_k_zero : k = 0,
+    { contradiction },
+    { right, intro k_ne_zero,
+      by_cases h_square : (∀ x : ℤ, f x = k * x^2),
+      { left, exact h_square },
+      { push_neg at h_square,
+        by_cases h_even_odd : (∀ x : ℤ, (even x → f x = 0) ∧ (odd x → f x = k)),
+        { right, left, exact h_even_odd },
+        { push_neg at h_even_odd,
+          by_cases h_mod_four : (∀ x : ℤ, (x % 4 = 0 → f x = 0) ∧ (x % 4 = 1 → f x = k) ∧ (x % 4 = 2 → f x = 4 * k)),
+          { right, right, exact h_mod_four },
+          { push_neg at h_mod_four,
+            -- Now we have a lot of cases to consider, but we can use the given hypothesis to derive a contradiction
+            -- We will use the following cases:
+            -- 1. f 0 = 0, f 1 = k, f 2 = 4k, f 3 = k
+            -- 2. f 0 = 0, f 1 = k, f 2 = 0, f 3 = k
+            -- 3. f 0 = 0, f 1 = 0, f 2 = 4k, f 3 = k
+            -- 4. f 0 = 0, f 1 = 0, f 2 = 0, f 3 = k
+            -- 5. f 0 ≠ 0, f 1 = k, f 2 = 4k, f 3 = k
+            -- 6. f 0 ≠ 0, f 1 = k, f 2 = 0, f 3 = k
+            -- 7. f 0 ≠ 0, f 1 = 0, f 2 = 4k, f 3 = k
+            -- 8. f 0 ≠ 0, f 1 = 0, f 2 = 0, f 3 = k
+            have h0 : f 0 = 0,
+            { by_contradiction hf0_ne_zero,
+              have h1 : f 1 = k,
+              { by_contradiction hf1_ne_k,
+                have h2 : f 2 = 4 * k,
+                { by_contradiction hf2_ne_four_k,
+                  have h3 : f 3 = k,
+                  { by_contradiction hf3_ne_k,
+                    have h_0_1_2 : 0 + 1 + 2 = 0,
+                    { linarith },
+                    have h_f_0_1_2 : f 0^2 + f 1^2 + f 2^2 = 2 * (f 0 * f 1 + f 1 * f 2 + f 2 * f 0),
+                    { apply h, exact h_0_1_2 },
+                    have h_f_0_1_2_ne : f 0^2 + f 1^2 + f 2^2 ≠ 2 * (end
+2024-07-03 20:53:47,263 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℤ → ℤ)\n(h : ∀ a b c : ℤ, a + b + c = 0 → f (a)^2 + f (b)^2 + f (c)^2 = 2 * (f (a) * f (b) + f (b) * f (c) + f (c) * f (a))) :\n(∀ x : ℤ, f x = 0) ∨\n(∀ k : ℤ, k ≠ 0 → ((∀ x : ℤ, f x = k * x^2) ∨\n(∀ x : ℤ, (even x → f x = 0) ∧ (odd x → f x = k)) ∨\n(∀ x : ℤ, (x % 4 = 0 → f x = 0) ∧ (x % 4 = 1 → f x = k) ∧ (x % 4 = 2 → f x = 4 * k))))\n\n:=\nbegin\n  by_cases h_f_zero : (∀ x : ℤ, f x = 0),\n  { left, exact h_f_zero },\n  { right, push_neg at h_f_zero,\n    obtain ⟨k, hk⟩ := exists_ne_zero_of_not_forall_zero h_f_zero,\n    by_cases h_k_zero : k = 0,\n    { contradiction },\n    { right, intro k_ne_zero,\n      by_cases h_square : (∀ x : ℤ, f x = k * x^2),\n      { left, exact h_square },\n      { push_neg at h_square,\n        by_cases h_even_odd : (∀ x : ℤ, (even x → f x = 0) ∧ (odd x → f x = k)),\n        { right, left, exact h_even_odd },\n        { push_neg at h_even_odd,\n          by_cases h_mod_four : (∀ x : ℤ, (x % 4 = 0 → f x = 0) ∧ (x % 4 = 1 → f x = k) ∧ (x % 4 = 2 → f x = 4 * k)),\n          { right, right, exact h_mod_four },\n          { push_neg at h_mod_four,\n            -- Now we have a lot of cases to consider, but we can use the given hypothesis to derive a contradiction\n            -- We will use the following cases:\n            -- 1. f 0 = 0, f 1 = k, f 2 = 4k, f 3 = k\n            -- 2. f 0 = 0, f 1 = k, f 2 = 0, f 3 = k\n            -- 3. f 0 = 0, f 1 = 0, f 2 = 4k, f 3 = k\n            -- 4. f 0 = 0, f 1 = 0, f 2 = 0, f 3 = k\n            -- 5. f 0 ≠ 0, f 1 = k, f 2 = 4k, f 3 = k\n            -- 6. f 0 ≠ 0, f 1 = k, f 2 = 0, f 3 = k\n            -- 7. f 0 ≠ 0, f 1 = 0, f 2 = 4k, f 3 = k\n            -- 8. f 0 ≠ 0, f 1 = 0, f 2 = 0, f 3 = k\n            have h0 : f 0 = 0,\n            { by_contradiction hf0_ne_zero,\n              have h1 : f 1 = k,\n              { by_contradiction hf1_ne_k,\n                have h2 : f 2 = 4 * k,\n                { by_contradiction hf2_ne_four_k,\n                  have h3 : f 3 = k,\n                  { by_contradiction hf3_ne_k,\n                    have h_0_1_2 : 0 + 1 + 2 = 0,\n                    { linarith },\n                    have h_f_0_1_2 : f 0^2 + f 1^2 + f 2^2 = 2 * (f 0 * f 1 + f 1 * f 2 + f 2 * f 0),\n                    { apply h, exact h_0_1_2 },\n                    have h_f_0_1_2_ne : f 0^2 + f 1^2 + f 2^2 ≠ 2 * (end']})
+2024-07-03 20:53:50,687 - __main__ - INFO - Updating policy
+2024-07-03 20:53:50,688 - __main__ - INFO - Policy updated
+2024-07-03 20:53:50,688 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-03 20:53:50,688 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:53:50,688 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-03 20:53:50,688 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-03 20:53:50,688 - __main__ - INFO - Dumping proof search result:
+theorem imo_2012_a1
+(f : ℤ → ℤ)
+(h : ∀ a b c : ℤ, a + b + c = 0 → f (a)^2 + f (b)^2 + f (c)^2 = 2 * (f (a) * f (b) + f (b) * f (c) + f (c) * f (a))) :
+(∀ x : ℤ, f x = 0) ∨
+(∀ k : ℤ, k ≠ 0 → ((∀ x : ℤ, f x = k * x^2) ∨
+(∀ x : ℤ, (even x → f x = 0) ∧ (odd x → f x = k)) ∨
+(∀ x : ℤ, (x % 4 = 0 → f x = 0) ∧ (x % 4 = 1 → f x = k) ∧ (x % 4 = 2 → f x = 4 * k)))) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem imo_2012_a1
+(f : ℤ → ℤ)
+(h : ∀ a b c : ℤ, a + b + c = 0 → f (a)^2 + f (b)^2 + f (c)^2 = 2 * (f (a) * f (b) + f (b) * f (c) + f (c) * f (a))) :
+(∀ x : ℤ, f x = 0) ∨
+(∀ k : ℤ, k ≠ 0 → ((∀ x : ℤ, f x = k * x^2) ∨
+(∀ x : ℤ, (even x → f x = 0) ∧ (odd x → f x = k)) ∨
+(∀ x : ℤ, (x % 4 = 0 → f x = 0) ∧ (x % 4 = 1 → f x = k) ∧ (x % 4 = 2 → f x = 4 * k)))) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 22.435901880264282
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-03 20:53:50,695 - __main__ - INFO - Prover for lemma: imo_2012_a1 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-03 20:53:50,698 - __main__ - INFO - Attempting to prove lemma: imo_2010_a1
+2024-07-03 20:53:51,282 - __main__ - INFO - Attempt 1 for proving lemma: imo_2010_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:53:51,282 - __main__ - INFO - Running the prover agent for lemma: imo_2010_a1 with timeout: 720 seconds
+2024-07-03 20:54:02,947 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-03 20:54:02,948 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:54:04,212 - __main__ - INFO - Requesting 1000 tokens to generate, 244 tokens in input.
+2024-07-03 20:54:04,212 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f (⌊x⌋ * y) = f (x) * ⌊f (y)⌋) :
+∃ C : ℝ, (C = 0 ∨ (1 ≤ C ∧ C < 2)) ∧ ∀ x : ℝ, f x = C :=
+
+[END]
+2024-07-03 20:54:17,154 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+import analysis.special_functions.floor
+
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f (⌊x⌋ * y) = f (x) * ⌊f (y)⌋) :
+∃ C : ℝ, (C = 0 ∨ (1 ≤ C ∧ C < 2)) ∧ ∀ x : ℝ, f x = C :=
+begin
+  let C := f 1,
+  use C,
+  split,
+  { by_cases hC : C = 0,
+    { left, exact hC },
+    { right, split,
+      { exact le_of_not_lt (λ h', hC (f_eq_zero_of_f_one_eq_zero f h').symm) },
+      { refine lt_of_not_ge (λ h', _),
+        have h'' : f 2 = C * ⌊f 2⌋, from h 1 2,
+        have h''' : f 2 = C * ⌊C⌋, from h'' ▸ h 2 1,
+        have h'''' : C * ⌊C⌋ = C * C, from (mul_left_cancel' (ne_of_gt (lt_of_not_ge h'))).1 h'''',
+        have h'''''' : C = 1, from (mul_left_cancel' (ne_of_gt (lt_of_not_ge h'))).1 h''''',
+        exact hC h'''''' } } },
+  { intro x,
+    have h' : f x = f (⌊x⌋ * (x / ⌊x⌋)), from rfl,
+    have h'' : f x = f ⌊x⌋ * ⌊f (x / ⌊x⌋)⌋, from h' ▸ h ⌊x⌋ (x / ⌊x⌋),
+    have h''' : f x = f 1 * ⌊f (x / ⌊x⌋)⌋, from h'' ▸ h ⌊x⌋ 1,
+    have h'''' : f x = C * ⌊f (x / ⌊x⌋)⌋, from h''' ▸ rfl,
+    have h'''''' : f (x / ⌊x⌋) = 1, from (mul_left_cancel' (ne_of_eq (or.resolve_left (hC ∨ _) (le_refl _)))).1 h''''',
+    have h''''''' : x / ⌊x⌋ = 1, from f_eq_one_of_f_one_eq_one f h''''''',
+    have h'''''''' : x = ⌊x⌋, from (mul_left_cancel' (ne_of_gt (lt_of_le_of_ne (le_refl _) (ne_of_eq hC))).1).1 h'''''''',
+    have h''''''''' : f x = f ⌊x⌋, from h'''''''' ▸ rfl,
+    exact h''''''''' ▸ rfl }
+end
+2024-07-03 20:54:17,154 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["import analysis.special_functions.floor\n\ntheorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x y : ℝ, f (⌊x⌋ * y) = f (x) * ⌊f (y)⌋) :\n∃ C : ℝ, (C = 0 ∨ (1 ≤ C ∧ C < 2)) ∧ ∀ x : ℝ, f x = C :=\nbegin\n  let C := f 1,\n  use C,\n  split,\n  { by_cases hC : C = 0,\n    { left, exact hC },\n    { right, split,\n      { exact le_of_not_lt (λ h', hC (f_eq_zero_of_f_one_eq_zero f h').symm) },\n      { refine lt_of_not_ge (λ h', _),\n        have h'' : f 2 = C * ⌊f 2⌋, from h 1 2,\n        have h''' : f 2 = C * ⌊C⌋, from h'' ▸ h 2 1,\n        have h'''' : C * ⌊C⌋ = C * C, from (mul_left_cancel' (ne_of_gt (lt_of_not_ge h'))).1 h'''',\n        have h'''''' : C = 1, from (mul_left_cancel' (ne_of_gt (lt_of_not_ge h'))).1 h''''',\n        exact hC h'''''' } } },\n  { intro x,\n    have h' : f x = f (⌊x⌋ * (x / ⌊x⌋)), from rfl,\n    have h'' : f x = f ⌊x⌋ * ⌊f (x / ⌊x⌋)⌋, from h' ▸ h ⌊x⌋ (x / ⌊x⌋),\n    have h''' : f x = f 1 * ⌊f (x / ⌊x⌋)⌋, from h'' ▸ h ⌊x⌋ 1,\n    have h'''' : f x = C * ⌊f (x / ⌊x⌋)⌋, from h''' ▸ rfl,\n    have h'''''' : f (x / ⌊x⌋) = 1, from (mul_left_cancel' (ne_of_eq (or.resolve_left (hC ∨ _) (le_refl _)))).1 h''''',\n    have h''''''' : x / ⌊x⌋ = 1, from f_eq_one_of_f_one_eq_one f h''''''',\n    have h'''''''' : x = ⌊x⌋, from (mul_left_cancel' (ne_of_gt (lt_of_le_of_ne (le_refl _) (ne_of_eq hC))).1).1 h'''''''',\n    have h''''''''' : f x = f ⌊x⌋, from h'''''''' ▸ rfl,\n    exact h''''''''' ▸ rfl }\nend"]})
+2024-07-03 20:54:20,679 - __main__ - INFO - Updating policy
+2024-07-03 20:54:20,679 - __main__ - INFO - Policy updated
+2024-07-03 20:54:20,679 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-03 20:54:20,679 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:54:20,679 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-03 20:54:20,679 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-03 20:54:20,679 - __main__ - INFO - Dumping proof search result:
+theorem imo_2010_a1
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f (⌊x⌋ * y) = f (x) * ⌊f (y)⌋) :
+∃ C : ℝ, (C = 0 ∨ (1 ≤ C ∧ C < 2)) ∧ ∀ x : ℝ, f x = C :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem imo_2010_a1
+(f : ℝ → ℝ)
+(h : ∀ x y : ℝ, f (⌊x⌋ * y) = f (x) * ⌊f (y)⌋) :
+∃ C : ℝ, (C = 0 ∨ (1 ≤ C ∧ C < 2)) ∧ ∀ x : ℝ, f x = C :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 17.73199200630188
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-03 20:54:20,687 - __main__ - INFO - Prover for lemma: imo_2010_a1 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-03 20:54:20,690 - __main__ - INFO - Attempting to prove lemma: imo_2008_a1
+2024-07-03 20:54:21,437 - __main__ - INFO - Attempt 1 for proving lemma: imo_2008_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:54:21,437 - __main__ - INFO - Running the prover agent for lemma: imo_2008_a1 with timeout: 720 seconds
+2024-07-03 20:54:33,773 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-03 20:54:33,773 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:54:35,079 - __main__ - INFO - Requesting 1000 tokens to generate, 331 tokens in input.
+2024-07-03 20:54:35,079 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x, 0 < x → 0 < f x)
+(h : ∀ p q r s : ℝ, ((0 < p ∧ 0 < q ∧ 0 < r ∧ 0 < s) ∧ p * q = r * s) →
+(f (p)^2 + f (q)^2) / (f (r^2) + f (s^2)) = (p^2 + q^2) / (r^2 + s^2)) :
+(∀ x : ℝ, (0 < x) → f x = x) ∨ (∀ x : ℝ, (0 < x) → f x = 1/x) :=
+
+[END]
+2024-07-03 20:54:48,832 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x, 0 < x → 0 < f x)
+(h : ∀ p q r s : ℝ, ((0 < p ∧ 0 < q ∧ 0 < r ∧ 0 < s) ∧ p * q = r * s) →
+(f (p)^2 + f (q)^2) / (f (r^2) + f (s^2)) = (p^2 + q^2) / (r^2 + s^2)) :
+(∀ x : ℝ, (0 < x) → f x = x) ∨ (∀ x : ℝ, (0 < x) → f x = 1/x) :=
+begin
+  by_contradiction,
+  push_neg,
+  simp only [not_forall, not_imp] at *,
+  rcases h_1 with ⟨x, hx, hx'⟩,
+  rcases h_2 with ⟨y, hy, hy'⟩,
+  have hxy : x ≠ y,
+  { intro hxy, subst hxy, contradiction },
+  have hxy' : f x ≠ f y,
+  { intro hxy', subst hxy', contradiction },
+  let p := x, let q := y, let r := sqrt (x * y), let s := sqrt (x / y),
+  have hp : 0 < p,
+  { exact hx },
+  have hq : 0 < q,
+  { exact hy },
+  have hr : 0 < r,
+  { exact mul_pos hx hy },
+  have hs : 0 < s,
+  { exact div_pos hx hy },
+  have hprs : p * q = r * s,
+  { rw [mul_assoc, sqrt_mul, sqrt_div, mul_comm y x, mul_assoc, mul_comm x y] },
+  have hfprqs : (f p)^2 + (f q)^2 = (f (r^2))^2 + (f (s^2))^2,
+  { rw [h p q r s hp hq hr hs hprs] },
+  have hfprqs' : f p = f q,
+  { rw [hfprqs, sq, sq, add_comm, add_comm (f q)^2] at hfprqs,
+    have hfprqs'' : (f p - f q) * (f p + f q) = 0,
+    { rw [sub_add, mul_comm, add_comm], exact hfprqs },
+    cases hfprqs'' with hfpr hfpr,
+    { exact hfpr },
+    { have hfqr : f q = -f p,
+      { rw [add_comm, eq_neg_iff_add_eq_zero] at hfpr, exact hfpr },
+      have hfqr' : f q^2 = f p^2,
+      { rw [hfqr, sq, sq, neg_mul_neg] },
+      have hfqr'' : f (r^2) = f (s^2),
+      { rw [h p q r s hp hq hr hs hprs, hfqr'] },
+      have hfqr''' : r^2 = s^2,
+      { rw [h_1, h_2, hfqr''] },
+      have hfqr'''' : r = s,
+      { exact sqrt_eq_iff_sq_eq.1 hfqr''' },
+      contradiction } },
+  have hfxy : f x = f y,
+  { exact hfprqs' },
+  contradiction
+end
+2024-07-03 20:54:48,832 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x, 0 < x → 0 < f x)\n(h : ∀ p q r s : ℝ, ((0 < p ∧ 0 < q ∧ 0 < r ∧ 0 < s) ∧ p * q = r * s) →\n(f (p)^2 + f (q)^2) / (f (r^2) + f (s^2)) = (p^2 + q^2) / (r^2 + s^2)) :\n(∀ x : ℝ, (0 < x) → f x = x) ∨ (∀ x : ℝ, (0 < x) → f x = 1/x) :=\nbegin\n  by_contradiction,\n  push_neg,\n  simp only [not_forall, not_imp] at *,\n  rcases h_1 with ⟨x, hx, hx'⟩,\n  rcases h_2 with ⟨y, hy, hy'⟩,\n  have hxy : x ≠ y,\n  { intro hxy, subst hxy, contradiction },\n  have hxy' : f x ≠ f y,\n  { intro hxy', subst hxy', contradiction },\n  let p := x, let q := y, let r := sqrt (x * y), let s := sqrt (x / y),\n  have hp : 0 < p,\n  { exact hx },\n  have hq : 0 < q,\n  { exact hy },\n  have hr : 0 < r,\n  { exact mul_pos hx hy },\n  have hs : 0 < s,\n  { exact div_pos hx hy },\n  have hprs : p * q = r * s,\n  { rw [mul_assoc, sqrt_mul, sqrt_div, mul_comm y x, mul_assoc, mul_comm x y] },\n  have hfprqs : (f p)^2 + (f q)^2 = (f (r^2))^2 + (f (s^2))^2,\n  { rw [h p q r s hp hq hr hs hprs] },\n  have hfprqs' : f p = f q,\n  { rw [hfprqs, sq, sq, add_comm, add_comm (f q)^2] at hfprqs,\n    have hfprqs'' : (f p - f q) * (f p + f q) = 0,\n    { rw [sub_add, mul_comm, add_comm], exact hfprqs },\n    cases hfprqs'' with hfpr hfpr,\n    { exact hfpr },\n    { have hfqr : f q = -f p,\n      { rw [add_comm, eq_neg_iff_add_eq_zero] at hfpr, exact hfpr },\n      have hfqr' : f q^2 = f p^2,\n      { rw [hfqr, sq, sq, neg_mul_neg] },\n      have hfqr'' : f (r^2) = f (s^2),\n      { rw [h p q r s hp hq hr hs hprs, hfqr'] },\n      have hfqr''' : r^2 = s^2,\n      { rw [h_1, h_2, hfqr''] },\n      have hfqr'''' : r = s,\n      { exact sqrt_eq_iff_sq_eq.1 hfqr''' },\n      contradiction } },\n  have hfxy : f x = f y,\n  { exact hfprqs' },\n  contradiction\nend"]})
+2024-07-03 20:54:52,456 - __main__ - INFO - Updating policy
+2024-07-03 20:54:52,456 - __main__ - INFO - Policy updated
+2024-07-03 20:54:52,456 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-03 20:54:52,456 - __main__ - INFO - Asking policy for next action
+2024-07-03 20:54:52,456 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-03 20:54:52,456 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-03 20:54:52,456 - __main__ - INFO - Dumping proof search result:
+theorem imo_2008_a1
+(f : ℝ → ℝ)
+(h₀ : ∀ x, 0 < x → 0 < f x)
+(h : ∀ p q r s : ℝ, ((0 < p ∧ 0 < q ∧ 0 < r ∧ 0 < s) ∧ p * q = r * s) →
+(f (p)^2 + f (q)^2) / (f (r^2) + f (s^2)) = (p^2 + q^2) / (r^2 + s^2)) :
+(∀ x : ℝ, (0 < x) → f x = x) ∨ (∀ x : ℝ, (0 < x) → f x = 1/x) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem imo_2008_a1
+(f : ℝ → ℝ)
+(h₀ : ∀ x, 0 < x → 0 < f x)
+(h : ∀ p q r s : ℝ, ((0 < p ∧ 0 < q ∧ 0 < r ∧ 0 < s) ∧ p * q = r * s) →
+(f (p)^2 + f (q)^2) / (f (r^2) + f (s^2)) = (p^2 + q^2) / (r^2 + s^2)) :
+(∀ x : ℝ, (0 < x) → f x = x) ∨ (∀ x : ℝ, (0 < x) → f x = 1/x) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 18.683995485305786
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-03 20:54:52,465 - __main__ - INFO - Prover for lemma: imo_2008_a1 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-03 20:54:52,475 - __main__ - INFO - Proof not found for lemma: imo_2002_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:54:52,475 - __main__ - INFO - Proof not found for lemma: imo_2019_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:54:52,475 - __main__ - INFO - Proof not found for lemma: imo_2018_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:54:52,475 - __main__ - INFO - Proof not found for lemma: imo_2012_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:54:52,476 - __main__ - INFO - Proof not found for lemma: imo_2010_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:54:52,476 - __main__ - INFO - Proof not found for lemma: imo_2008_a1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-03 20:54:52,476 - __main__ - INFO - Success rate: 0/6 = 0.0 for benchmark: imo_a1_funeq
+2024-07-03 20:54:52,477 - __main__ - INFO - Finished running experiment: 
+{
+    "env_settings": {
+        "name": "bm25_retrieval",
+        "retrieval_strategy": "BM25"
+    },
+    "prompt_settings": {
+        "name": "lean_few_shot",
+        "main_prompt": "data/prompts/baseline/simple-prompt-lean.md",
+        "conv_prompt": "data/prompts/baseline/simple-prompt-conv-lean.md",
+        "informal_proof_repo": null
+    },
+    "eval_settings": {
+        "name": "n_4_few_llama",
+        "use_hammer": "ALLOW",
+        "setting_type": "Agent",
+        "max_proof_depth": 100,
+        "timeout_in_secs": 60,
+        "proof_retries": 1,
+        "max_tokens_per_action": 1000,
+        "max_theorems_in_prompt": 7,
+        "gpt_model_name": "meta/meta-llama-3-70b-instruct",
+        "max_number_of_episodes": 1,
+        "max_steps_per_episode": 4,
+        "render": false,
+        "checkpoint_dir": ".log/checkpoints/imo_a1_funeq/n_4_few_llama/lean_few_shot",
+        "should_checkpoint": false,
+        "temperature": 0.0,
+        "max_history_messages": 0,
+        "policy_name": "FewShot",
+        "proof_dump_dir": ".log/proofs/eval_driver/few_shot/gpt4_turbo/imo_a1_funeq/20240703-205204",
+        "use_human_readable_proof_context": true,
+        "sample": 1.0,
+        "sample_seed": 3840,
+        "use_example_retrieval": false,
+        "always_use_useful_theorem_retrieval": false,
+        "num_goal_per_prompt": null
+    },
+    "benchmark": {
+        "name": "imo_a1_funeq",
+        "num_files": 1,
+        "language": "LEAN",
+        "datasets": [
+            {
+                "project": "data/benchmarks/FunEq",
+                "files": [
+                    {
+                        "path": "src/dataset.lean",
+                        "theorems": [
+                            "imo_2002_a1",
+                            "imo_2019_a1",
+                            "imo_2018_a1",
+                            "imo_2012_a1",
+                            "imo_2010_a1",
+                            "imo_2008_a1"
+                        ],
+                        "max_retry_attempts_limits": {},
+                        "max_time_limits_in_secs": {}
+                    }
+                ]
+            }
+        ],
+        "few_shot_data_path_for_retrieval": null,
+        "few_shot_metadata_filename_for_retrieval": null,
+        "dfs_data_path_for_retrieval": null,
+        "dfs_metadata_filename_for_retrieval": null,
+        "timeout_per_theorem_in_secs": 720
+    }
+}

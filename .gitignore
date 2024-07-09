@@ -191,3 +191,6 @@ api_log.json
 
 # Ignore any downloaded files
 *.tar.gz
+
+cloud
+googlecloud

@@ -1,0 +1,1428 @@
+2024-07-01 08:16:30,064 - __main__ - INFO - Pid: 345805
+2024-07-01 08:16:30,067 - __main__ - INFO - Running Experiment: {
+    "env_settings": {
+        "name": "bm25_retrieval",
+        "retrieval_strategy": "BM25"
+    },
+    "prompt_settings": {
+        "name": "lean_few_shot",
+        "main_prompt": "data/prompts/baseline/simple-prompt-lean.md",
+        "conv_prompt": "data/prompts/baseline/simple-prompt-conv-lean.md",
+        "informal_proof_repo": null
+    },
+    "eval_settings": {
+        "name": "n_4_few_claude",
+        "use_hammer": "ALLOW",
+        "setting_type": "Agent",
+        "max_proof_depth": 100,
+        "timeout_in_secs": 60,
+        "proof_retries": 1,
+        "max_tokens_per_action": 1000,
+        "max_theorems_in_prompt": 7,
+        "gpt_model_name": "claude-3-5-sonnet-20240620",
+        "max_number_of_episodes": 1,
+        "max_steps_per_episode": 4,
+        "render": false,
+        "checkpoint_dir": ".log/checkpoints",
+        "should_checkpoint": false,
+        "temperature": 0.0,
+        "max_history_messages": 0,
+        "policy_name": "FewShot",
+        "proof_dump_dir": ".log/proofs/eval_driver/few_shot/gpt4_turbo",
+        "use_human_readable_proof_context": true,
+        "sample": 1.0,
+        "sample_seed": 3840,
+        "use_example_retrieval": false,
+        "always_use_useful_theorem_retrieval": false,
+        "num_goal_per_prompt": null
+    },
+    "benchmark": {
+        "name": "intermediate_funeq",
+        "num_files": 1,
+        "language": "LEAN",
+        "datasets": [
+            {
+                "project": "data/benchmarks/FunEq",
+                "files": [
+                    {
+                        "path": "src/dataset.lean",
+                        "theorems": [
+                            "intermediate_funeq_1",
+                            "intermediate_funeq_2",
+                            "intermediate_funeq_3",
+                            "intermediate_funeq_4",
+                            "intermediate_funeq_5",
+                            "intermediate_funeq_6",
+                            "intermediate_funeq_7",
+                            "intermediate_funeq_8",
+                            "intermediate_funeq_9",
+                            "intermediate_funeq_10",
+                            "intermediate_funeq_11",
+                            "intermediate_funeq_12",
+                            "intermediate_funeq_13",
+                            "intermediate_funeq_14",
+                            "intermediate_funeq_15"
+                        ],
+                        "max_retry_attempts_limits": {},
+                        "max_time_limits_in_secs": {}
+                    }
+                ]
+            }
+        ],
+        "few_shot_data_path_for_retrieval": null,
+        "few_shot_metadata_filename_for_retrieval": null,
+        "dfs_data_path_for_retrieval": null,
+        "dfs_metadata_filename_for_retrieval": null,
+        "timeout_per_theorem_in_secs": 720
+    }
+}
+2024-07-01 08:16:30,171 - __main__ - INFO - Getting all lemmas in file: data/benchmarks/FunEq/src/dataset.lean with timeout: 300000 seconds
+2024-07-01 08:16:34,219 - __main__ - INFO - Discovered 64 lemmas
+2024-07-01 08:16:34,288 - __main__ - INFO - Discovered 15 lemmas to prove in data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:16:34,288 - __main__ - INFO - Lemmas to prove in file data/benchmarks/FunEq/src/dataset.lean: 
+['intermediate_funeq_1', 'intermediate_funeq_2', 'intermediate_funeq_3', 'intermediate_funeq_4', 'intermediate_funeq_5', 'intermediate_funeq_6', 'intermediate_funeq_7', 'intermediate_funeq_8', 'intermediate_funeq_9', 'intermediate_funeq_10', 'intermediate_funeq_11', 'intermediate_funeq_12', 'intermediate_funeq_13', 'intermediate_funeq_14', 'intermediate_funeq_15']
+2024-07-01 08:16:34,288 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_1
+2024-07-01 08:16:36,541 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:16:36,541 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_1 with timeout: 720 seconds
+2024-07-01 08:16:48,270 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:16:48,270 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:16:50,676 - __main__ - INFO - Requesting 1000 tokens to generate, 227 tokens in input.
+2024-07-01 08:16:50,676 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2):
+∀ x, (f(x) - x)^2 = f(0) :=
+
+[END]
+2024-07-01 08:16:54,358 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2):
+∀ x, (f(x) - x)^2 = f(0) :=
+begin
+  intro x,
+  
+  -- Apply the hypothesis h with y = x
+  have h1 : f(0) = f(x)^2 - 2*x*f(x) + x^2,
+  { exact h x x },
+  
+  -- Expand (f(x) - x)^2
+  calc (f(x) - x)^2 = f(x)^2 - 2*x*f(x) + x^2 : by ring
+                ... = f(0) : by rw ←h1,
+end
+2024-07-01 08:16:54,358 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x y, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2):\n∀ x, (f(x) - x)^2 = f(0) :=\nbegin\n  intro x,\n  \n  -- Apply the hypothesis h with y = x\n  have h1 : f(0) = f(x)^2 - 2*x*f(x) + x^2,\n  { exact h x x },\n  \n  -- Expand (f(x) - x)^2\n  calc (f(x) - x)^2 = f(x)^2 - 2*x*f(x) + x^2 : by ring\n                ... = f(0) : by rw ←h1,\nend']})
+2024-07-01 08:17:00,502 - __main__ - INFO - Updating policy
+2024-07-01 08:17:00,502 - __main__ - INFO - Policy updated
+2024-07-01 08:17:00,502 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:17:00,502 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:17:00,502 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:17:00,502 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:17:00,502 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_1
+(f : ℝ → ℝ)
+(h : ∀ x y, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2):
+∀ x, (f(x) - x)^2 = f(0) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_1
+(f : ℝ → ℝ)
+(h : ∀ x y, f((x - y)^2) = f(x)^2 - 2 * x * f(y) + y^2):
+∀ x, (f(x) - x)^2 = f(0) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 12.232854843139648
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:17:00,567 - __main__ - INFO - Prover for lemma: intermediate_funeq_1 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:17:00,571 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_2
+2024-07-01 08:17:02,507 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_2 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:17:02,508 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_2 with timeout: 720 seconds
+2024-07-01 08:17:16,621 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:17:16,621 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:17:18,373 - __main__ - INFO - Requesting 1000 tokens to generate, 255 tokens in input.
+2024-07-01 08:17:18,373 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x, f(x + 1) = f(x) + 1)
+(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :
+∀ x, x ≠ 0 → f(1 + 1/x) = 1 + f(x)/x^2 :=
+
+[END]
+2024-07-01 08:17:23,453 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x, f(x + 1) = f(x) + 1)
+(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :
+∀ x, x ≠ 0 → f(1 + 1/x) = 1 + f(x)/x^2 :=
+begin
+  intros x hx,
+  have h2 : 1 + 1/x = (x + 1)/x,
+  { field_simp [hx] },
+  calc f(1 + 1/x) = f((x + 1)/x) : by rw h2
+                ... = f(x/x + 1/x) : by ring_nf
+                ... = f(x/x) + 1 : by rw h₀
+                ... = f(1) + 1 : by congr' 1; field_simp [hx]
+                ... = f(x)/x^2 + 1 : by rw h₁ x hx
+                ... = 1 + f(x)/x^2 : by ring,
+end
+2024-07-01 08:17:23,453 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x, f(x + 1) = f(x) + 1)\n(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :\n∀ x, x ≠ 0 → f(1 + 1/x) = 1 + f(x)/x^2 :=\nbegin\n  intros x hx,\n  have h2 : 1 + 1/x = (x + 1)/x,\n  { field_simp [hx] },\n  calc f(1 + 1/x) = f((x + 1)/x) : by rw h2\n                ... = f(x/x + 1/x) : by ring_nf\n                ... = f(x/x) + 1 : by rw h₀\n                ... = f(1) + 1 : by congr' 1; field_simp [hx]\n                ... = f(x)/x^2 + 1 : by rw h₁ x hx\n                ... = 1 + f(x)/x^2 : by ring,\nend"]})
+2024-07-01 08:17:30,385 - __main__ - INFO - Updating policy
+2024-07-01 08:17:30,385 - __main__ - INFO - Policy updated
+2024-07-01 08:17:30,385 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:17:30,385 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:17:30,385 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:17:30,385 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:17:30,385 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_2
+(f : ℝ → ℝ)
+(h₀ : ∀ x, f(x + 1) = f(x) + 1)
+(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :
+∀ x, x ≠ 0 → f(1 + 1/x) = 1 + f(x)/x^2 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_2
+(f : ℝ → ℝ)
+(h₀ : ∀ x, f(x + 1) = f(x) + 1)
+(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :
+∀ x, x ≠ 0 → f(1 + 1/x) = 1 + f(x)/x^2 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 13.765104055404663
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:17:30,435 - __main__ - INFO - Prover for lemma: intermediate_funeq_2 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:17:30,455 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_3
+2024-07-01 08:17:31,614 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_3 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:17:31,615 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_3 with timeout: 720 seconds
+2024-07-01 08:17:45,265 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:17:45,266 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:17:47,480 - __main__ - INFO - Requesting 1000 tokens to generate, 277 tokens in input.
+2024-07-01 08:17:47,480 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :
+∀ x, (x ≠ 0 ∧ x ≠ 1) → f(x^2 - x) = x^2 * f(x - 1) - (x - 1)^2 * f(x) :=
+
+[END]
+2024-07-01 08:18:00,203 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :
+∀ x, (x ≠ 0 ∧ x ≠ 1) → f(x^2 - x) = x^2 * f(x - 1) - (x - 1)^2 * f(x) :=
+begin
+  intros x hx,
+  have h_x_nonzero : x ≠ 0, from hx.left,
+  have h_x_not_one : x ≠ 1, from hx.right,
+  
+  -- Step 1: Express f(x^2 - x) using the additive property
+  have step1 : f(x^2 - x) = f(x^2) + f(-x), from h₀ (x^2) (-x),
+  
+  -- Step 2: Express f(x^2) using the given property
+  have step2 : f(x^2) = x^2 * f(1/x), 
+  { rw ←h₁ x h_x_nonzero,
+    ring },
+  
+  -- Step 3: Express f(-x) using the additive property
+  have step3 : f(-x) = -f(x), 
+  { have h_neg : f(-x) + f(x) = f(0), by rw [←h₀, add_neg_self, f.map_zero],
+    rw add_eq_zero_iff_neg_eq at h_neg,
+    exact h_neg.2 },
+  
+  -- Combine steps 1-3
+  calc f(x^2 - x) = f(x^2) + f(-x) : step1
+               ... = x^2 * f(1/x) - f(x) : by rw [step2, step3]
+               ... = x^2 * (f(x)/x^2) - f(x) : by rw h₁ x h_x_nonzero
+               ... = f(x) - f(x) : by ring
+               ... = 0 : by ring,
+  
+  -- Now prove the right-hand side equals 0
+  have rhs_eq_zero : x^2 * f(x - 1) - (x - 1)^2 * f(x) = 0,
+  { calc x^2 * f(x - 1) - (x - 1)^2 * f(x)
+        = x^2 * f(x - 1) - (x^2 - 2*x + 1) * f(x) : by ring
+    ... = x^2 * f(x - 1) - x^2 * f(x) + 2*x * f(x) - f(x) : by ring
+    ... = x^2 * (f(x - 1) - f(x)) + (2*x - 1) * f(x) : by ring
+    ... = x^2 * f(-1) + (2*x - 1) * f(x) : by rw [h₀ (x-1) (-1), add_neg_self]
+    ... = -x^2 * f(1) + (2*x - 1) * f(x) : by rw [step3, neg_mul]
+    ... = -x^2 * (f(x)/x^2) + (2*x - 1) * f(x) : by rw [h₁ x h_x_nonzero, one_div]
+    ... = -f(x) + (2*x - 1) * f(x) : by ring
+    ... = 2*x*f(x) - f(x) - f(end
+2024-07-01 08:18:00,204 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x y, f(x + y) = f(x) + f(y))\n(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :\n∀ x, (x ≠ 0 ∧ x ≠ 1) → f(x^2 - x) = x^2 * f(x - 1) - (x - 1)^2 * f(x) :=\nbegin\n  intros x hx,\n  have h_x_nonzero : x ≠ 0, from hx.left,\n  have h_x_not_one : x ≠ 1, from hx.right,\n  \n  -- Step 1: Express f(x^2 - x) using the additive property\n  have step1 : f(x^2 - x) = f(x^2) + f(-x), from h₀ (x^2) (-x),\n  \n  -- Step 2: Express f(x^2) using the given property\n  have step2 : f(x^2) = x^2 * f(1/x), \n  { rw ←h₁ x h_x_nonzero,\n    ring },\n  \n  -- Step 3: Express f(-x) using the additive property\n  have step3 : f(-x) = -f(x), \n  { have h_neg : f(-x) + f(x) = f(0), by rw [←h₀, add_neg_self, f.map_zero],\n    rw add_eq_zero_iff_neg_eq at h_neg,\n    exact h_neg.2 },\n  \n  -- Combine steps 1-3\n  calc f(x^2 - x) = f(x^2) + f(-x) : step1\n               ... = x^2 * f(1/x) - f(x) : by rw [step2, step3]\n               ... = x^2 * (f(x)/x^2) - f(x) : by rw h₁ x h_x_nonzero\n               ... = f(x) - f(x) : by ring\n               ... = 0 : by ring,\n  \n  -- Now prove the right-hand side equals 0\n  have rhs_eq_zero : x^2 * f(x - 1) - (x - 1)^2 * f(x) = 0,\n  { calc x^2 * f(x - 1) - (x - 1)^2 * f(x)\n        = x^2 * f(x - 1) - (x^2 - 2*x + 1) * f(x) : by ring\n    ... = x^2 * f(x - 1) - x^2 * f(x) + 2*x * f(x) - f(x) : by ring\n    ... = x^2 * (f(x - 1) - f(x)) + (2*x - 1) * f(x) : by ring\n    ... = x^2 * f(-1) + (2*x - 1) * f(x) : by rw [h₀ (x-1) (-1), add_neg_self]\n    ... = -x^2 * f(1) + (2*x - 1) * f(x) : by rw [step3, neg_mul]\n    ... = -x^2 * (f(x)/x^2) + (2*x - 1) * f(x) : by rw [h₁ x h_x_nonzero, one_div]\n    ... = -f(x) + (2*x - 1) * f(x) : by ring\n    ... = 2*x*f(x) - f(x) - f(end']})
+2024-07-01 08:18:06,237 - __main__ - INFO - Updating policy
+2024-07-01 08:18:06,237 - __main__ - INFO - Policy updated
+2024-07-01 08:18:06,237 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:18:06,237 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:18:06,237 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:18:06,237 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:18:06,237 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_3
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :
+∀ x, (x ≠ 0 ∧ x ≠ 1) → f(x^2 - x) = x^2 * f(x - 1) - (x - 1)^2 * f(x) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_3
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x, x ≠ 0 → f(1/x) = f(x)/x^2) :
+∀ x, (x ≠ 0 ∧ x ≠ 1) → f(x^2 - x) = x^2 * f(x - 1) - (x - 1)^2 * f(x) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 20.97239375114441
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:18:06,348 - __main__ - INFO - Prover for lemma: intermediate_funeq_3 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:18:06,352 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_4
+2024-07-01 08:18:08,439 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_4 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:18:08,440 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_4 with timeout: 720 seconds
+2024-07-01 08:18:21,529 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:18:21,529 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:18:23,556 - __main__ - INFO - Requesting 1000 tokens to generate, 251 tokens in input.
+2024-07-01 08:18:23,556 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x y, f(x * y) = f(x) * f(y)) :
+∀ r : ℚ, ∀ x : ℝ, f(r * x) = r * f(x) :=
+
+[END]
+2024-07-01 08:18:31,244 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x y, f(x * y) = f(x) * f(y)) :
+∀ r : ℚ, ∀ x : ℝ, f(r * x) = r * f(x) :=
+begin
+  intros r x,
+  rcases r with ⟨n, d, h⟩,
+  simp only [rat.cast_mk] at *,
+  have h_dpos : 0 < d := rat.pos_den r,
+  rw [← rat.cast_mk n d h, rat.cast_mk],
+  have key : f((n : ℝ) * x) = (n : ℝ) * f(x),
+  { induction n with k ih k ih,
+    { simp [h₁] },
+    { rw [nat.cast_succ, mul_add, h₀, ih, nat.cast_succ, mul_add] } },
+  rw [div_mul_eq_mul_div, h₁, key, div_mul_eq_mul_div],
+  congr' 1,
+  rw [← h₁, mul_div_cancel_left _ (ne_of_gt h_dpos).symm],
+end
+2024-07-01 08:18:31,244 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x y, f(x + y) = f(x) + f(y))\n(h₁ : ∀ x y, f(x * y) = f(x) * f(y)) :\n∀ r : ℚ, ∀ x : ℝ, f(r * x) = r * f(x) :=\nbegin\n  intros r x,\n  rcases r with ⟨n, d, h⟩,\n  simp only [rat.cast_mk] at *,\n  have h_dpos : 0 < d := rat.pos_den r,\n  rw [← rat.cast_mk n d h, rat.cast_mk],\n  have key : f((n : ℝ) * x) = (n : ℝ) * f(x),\n  { induction n with k ih k ih,\n    { simp [h₁] },\n    { rw [nat.cast_succ, mul_add, h₀, ih, nat.cast_succ, mul_add] } },\n  rw [div_mul_eq_mul_div, h₁, key, div_mul_eq_mul_div],\n  congr' 1,\n  rw [← h₁, mul_div_cancel_left _ (ne_of_gt h_dpos).symm],\nend"]})
+2024-07-01 08:18:38,385 - __main__ - INFO - Updating policy
+2024-07-01 08:18:38,385 - __main__ - INFO - Policy updated
+2024-07-01 08:18:38,385 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:18:38,385 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:18:38,385 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:18:38,385 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:18:38,385 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_4
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x y, f(x * y) = f(x) * f(y)) :
+∀ r : ℚ, ∀ x : ℝ, f(r * x) = r * f(x) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_4
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x y, f(x * y) = f(x) * f(y)) :
+∀ r : ℚ, ∀ x : ℝ, f(r * x) = r * f(x) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 16.857011079788208
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:18:38,400 - __main__ - INFO - Prover for lemma: intermediate_funeq_4 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:18:38,404 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_5
+2024-07-01 08:18:40,094 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_5 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:18:40,094 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_5 with timeout: 720 seconds
+2024-07-01 08:18:55,000 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:18:55,000 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:18:57,032 - __main__ - INFO - Requesting 1000 tokens to generate, 241 tokens in input.
+2024-07-01 08:18:57,032 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x, f(x^2) = f(x)^2) :
+∀ x y: ℝ, x > y → f(x) ≥ f(y) :=
+
+[END]
+2024-07-01 08:19:02,154 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x, f(x^2) = f(x)^2) :
+∀ x y: ℝ, x > y → f(x) ≥ f(y) :=
+begin
+  intros x y hxy,
+  let d := x - y,
+  have hd : d > 0, from sub_pos.mpr hxy,
+  have key : f(x) = f(y + d), by rw [add_sub_cancel'_right],
+  rw key,
+  rw h₀,
+  have h_sq : f(d^2) = f(d)^2, from h₁ d,
+  have h_nonneg : f(d) ≥ 0,
+  { rw ← h_sq,
+    exact sq_nonneg (f d) },
+  exact add_le_add_left h_nonneg (f y),
+end
+2024-07-01 08:19:02,155 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x y, f(x + y) = f(x) + f(y))\n(h₁ : ∀ x, f(x^2) = f(x)^2) :\n∀ x y: ℝ, x > y → f(x) ≥ f(y) :=\nbegin\n  intros x y hxy,\n  let d := x - y,\n  have hd : d > 0, from sub_pos.mpr hxy,\n  have key : f(x) = f(y + d), by rw [add_sub_cancel'_right],\n  rw key,\n  rw h₀,\n  have h_sq : f(d^2) = f(d)^2, from h₁ d,\n  have h_nonneg : f(d) ≥ 0,\n  { rw ← h_sq,\n    exact sq_nonneg (f d) },\n  exact add_le_add_left h_nonneg (f y),\nend"]})
+2024-07-01 08:19:08,890 - __main__ - INFO - Updating policy
+2024-07-01 08:19:08,890 - __main__ - INFO - Policy updated
+2024-07-01 08:19:08,890 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:19:08,890 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:19:08,890 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:19:08,890 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:19:08,890 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_5
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x, f(x^2) = f(x)^2) :
+∀ x y: ℝ, x > y → f(x) ≥ f(y) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_5
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x + y) = f(x) + f(y))
+(h₁ : ∀ x, f(x^2) = f(x)^2) :
+∀ x y: ℝ, x > y → f(x) ≥ f(y) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 13.891044616699219
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:19:08,945 - __main__ - INFO - Prover for lemma: intermediate_funeq_5 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:19:08,950 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_6
+2024-07-01 08:19:10,895 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_6 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:19:10,895 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_6 with timeout: 720 seconds
+2024-07-01 08:19:24,420 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:19:24,421 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:19:27,008 - __main__ - INFO - Requesting 1000 tokens to generate, 230 tokens in input.
+2024-07-01 08:19:27,008 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f(f(x - y)) = f(x) - f(y) + f(x) * f(y) - x * y) :
+∀ x : ℝ, f(x)^2 = x^2 :=
+
+[END]
+2024-07-01 08:19:34,168 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f(f(x - y)) = f(x) - f(y) + f(x) * f(y) - x * y) :
+∀ x : ℝ, f(x)^2 = x^2 :=
+begin
+  intro x,
+  
+  -- Let's apply the hypothesis with y = 0
+  have h1 := h x 0,
+  
+  -- Simplify the right-hand side
+  simp at h1,
+  
+  -- Now we have: f(f(x)) = f(x) + f(x) * f(0) - x * 0
+  -- Simplify further
+  rw mul_zero at h1,
+  
+  -- We now have: f(f(x)) = f(x) + f(x) * f(0)
+  
+  -- Let's also apply the hypothesis with x = 0 and y = 0
+  have h2 := h 0 0,
+  
+  -- Simplify
+  simp at h2,
+  
+  -- We now have: f(0) = 0
+  
+  -- Substitute this back into h1
+  rw h2 at h1,
+  rw mul_zero at h1,
+  
+  -- We now have: f(f(x)) = f(x)
+  
+  -- Let's apply the main hypothesis again with y = x
+  have h3 := h x x,
+  
+  -- Simplify
+  simp at h3,
+  
+  -- We now have: f(0) = f(x) - f(x) + f(x) * f(x) - x * x
+  
+  -- Substitute f(0) = 0 and simplify
+  rw h2 at h3,
+  simp at h3,
+  
+  -- We now have: 0 = f(x) * f(x) - x * x
+  
+  -- Rearrange to get the desired result
+  exact eq_comm.mp (neg_eq_zero.mp h3),
+end
+2024-07-01 08:19:34,169 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x y, f(f(x - y)) = f(x) - f(y) + f(x) * f(y) - x * y) :\n∀ x : ℝ, f(x)^2 = x^2 :=\nbegin\n  intro x,\n  \n  -- Let's apply the hypothesis with y = 0\n  have h1 := h x 0,\n  \n  -- Simplify the right-hand side\n  simp at h1,\n  \n  -- Now we have: f(f(x)) = f(x) + f(x) * f(0) - x * 0\n  -- Simplify further\n  rw mul_zero at h1,\n  \n  -- We now have: f(f(x)) = f(x) + f(x) * f(0)\n  \n  -- Let's also apply the hypothesis with x = 0 and y = 0\n  have h2 := h 0 0,\n  \n  -- Simplify\n  simp at h2,\n  \n  -- We now have: f(0) = 0\n  \n  -- Substitute this back into h1\n  rw h2 at h1,\n  rw mul_zero at h1,\n  \n  -- We now have: f(f(x)) = f(x)\n  \n  -- Let's apply the main hypothesis again with y = x\n  have h3 := h x x,\n  \n  -- Simplify\n  simp at h3,\n  \n  -- We now have: f(0) = f(x) - f(x) + f(x) * f(x) - x * x\n  \n  -- Substitute f(0) = 0 and simplify\n  rw h2 at h3,\n  simp at h3,\n  \n  -- We now have: 0 = f(x) * f(x) - x * x\n  \n  -- Rearrange to get the desired result\n  exact eq_comm.mp (neg_eq_zero.mp h3),\nend"]})
+2024-07-01 08:19:39,196 - __main__ - INFO - Updating policy
+2024-07-01 08:19:39,196 - __main__ - INFO - Policy updated
+2024-07-01 08:19:39,196 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:19:39,196 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:19:39,196 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:19:39,196 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:19:39,196 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_6
+(f : ℝ → ℝ)
+(h : ∀ x y, f(f(x - y)) = f(x) - f(y) + f(x) * f(y) - x * y) :
+∀ x : ℝ, f(x)^2 = x^2 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_6
+(f : ℝ → ℝ)
+(h : ∀ x y, f(f(x - y)) = f(x) - f(y) + f(x) * f(y) - x * y) :
+∀ x : ℝ, f(x)^2 = x^2 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 14.776569604873657
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:19:39,259 - __main__ - INFO - Prover for lemma: intermediate_funeq_6 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:19:39,265 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_7
+2024-07-01 08:19:41,555 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_7 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:19:41,556 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_7 with timeout: 720 seconds
+2024-07-01 08:19:55,254 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:19:55,254 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:19:57,048 - __main__ - INFO - Requesting 1000 tokens to generate, 307 tokens in input.
+2024-07-01 08:19:57,048 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x y, (x ≠ 0 ∧ y ≠ 0) → f((x^2 + y^2)/(2 * x * y)) = (f(x)^2 + f(y)^2) / (2 * f(x) * f(y))) :
+∀ x z : ℝ, f(z) * f(x * z)^2 - f(x) * (1 + f(z)^2) * f(x * z) + f(z) * f(x)^2 = 0 :=
+
+[END]
+2024-07-01 08:20:04,619 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x y, (x ≠ 0 ∧ y ≠ 0) → f((x^2 + y^2)/(2 * x * y)) = (f(x)^2 + f(y)^2) / (2 * f(x) * f(y))) :
+∀ x z : ℝ, f(z) * f(x * z)^2 - f(x) * (1 + f(z)^2) * f(x * z) + f(z) * f(x)^2 = 0 :=
+begin
+  intros x z,
+  by_cases h : x = 0 ∨ z = 0,
+  { cases h,
+    { rw h,
+      simp [h₀],
+      ring },
+    { rw h,
+      simp [h₀],
+      ring } },
+  { push_neg at h,
+    have key := h₁ x z h,
+    have h_xz : x * z ≠ 0 := mul_ne_zero h.1 h.2,
+    have key2 := h₁ (x*z) z ⟨h_xz, h.2⟩,
+    rw [sq, mul_pow] at key2,
+    have : (x * z)^2 + z^2 = z^2 * (x^2 + 1),
+    { ring },
+    rw [this, mul_div_mul_left _ _ (ne_of_gt (sq_pos_of_ne_zero h.2))] at key2,
+    rw [←key2, key],
+    ring_nf,
+    field_simp [h.2],
+    ring },
+end
+2024-07-01 08:20:04,620 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : f(0) = 0)\n(h₁ : ∀ x y, (x ≠ 0 ∧ y ≠ 0) → f((x^2 + y^2)/(2 * x * y)) = (f(x)^2 + f(y)^2) / (2 * f(x) * f(y))) :\n∀ x z : ℝ, f(z) * f(x * z)^2 - f(x) * (1 + f(z)^2) * f(x * z) + f(z) * f(x)^2 = 0 :=\nbegin\n  intros x z,\n  by_cases h : x = 0 ∨ z = 0,\n  { cases h,\n    { rw h,\n      simp [h₀],\n      ring },\n    { rw h,\n      simp [h₀],\n      ring } },\n  { push_neg at h,\n    have key := h₁ x z h,\n    have h_xz : x * z ≠ 0 := mul_ne_zero h.1 h.2,\n    have key2 := h₁ (x*z) z ⟨h_xz, h.2⟩,\n    rw [sq, mul_pow] at key2,\n    have : (x * z)^2 + z^2 = z^2 * (x^2 + 1),\n    { ring },\n    rw [this, mul_div_mul_left _ _ (ne_of_gt (sq_pos_of_ne_zero h.2))] at key2,\n    rw [←key2, key],\n    ring_nf,\n    field_simp [h.2],\n    ring },\nend']})
+2024-07-01 08:20:11,916 - __main__ - INFO - Updating policy
+2024-07-01 08:20:11,916 - __main__ - INFO - Policy updated
+2024-07-01 08:20:11,916 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:20:11,916 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:20:11,916 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:20:11,916 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:20:11,916 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_7
+(f : ℝ → ℝ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x y, (x ≠ 0 ∧ y ≠ 0) → f((x^2 + y^2)/(2 * x * y)) = (f(x)^2 + f(y)^2) / (2 * f(x) * f(y))) :
+∀ x z : ℝ, f(z) * f(x * z)^2 - f(x) * (1 + f(z)^2) * f(x * z) + f(z) * f(x)^2 = 0 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_7
+(f : ℝ → ℝ)
+(h₀ : f(0) = 0)
+(h₁ : ∀ x y, (x ≠ 0 ∧ y ≠ 0) → f((x^2 + y^2)/(2 * x * y)) = (f(x)^2 + f(y)^2) / (2 * f(x) * f(y))) :
+∀ x z : ℝ, f(z) * f(x * z)^2 - f(x) * (1 + f(z)^2) * f(x * z) + f(z) * f(x)^2 = 0 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 16.66265892982483
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:20:11,972 - __main__ - INFO - Prover for lemma: intermediate_funeq_7 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:20:12,006 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_8
+2024-07-01 08:20:13,906 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_8 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:20:13,907 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_8 with timeout: 720 seconds
+2024-07-01 08:20:28,614 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:20:28,614 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:20:30,647 - __main__ - INFO - Requesting 1000 tokens to generate, 288 tokens in input.
+2024-07-01 08:20:30,648 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x, x ≥ 1 → f(x) ≥ 1)
+(h₁ : ∀ x, x ≥ 1 → f(x) ≤ 2 + 2 * x)
+(h₂ : ∀ x, x ≥ 1 → x * f(x + 1) = f(x)^2 - 1):
+∀ x : ℝ, ∀ k : ℕ, f(x) < 2^((1/2^k)) * (1 + x) :=
+
+[END]
+2024-07-01 08:20:46,447 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x, x ≥ 1 → f(x) ≥ 1)
+(h₁ : ∀ x, x ≥ 1 → f(x) ≤ 2 + 2 * x)
+(h₂ : ∀ x, x ≥ 1 → x * f(x + 1) = f(x)^2 - 1):
+∀ x : ℝ, ∀ k : ℕ, f(x) < 2^((1/2^k)) * (1 + x) :=
+begin
+  intros x k,
+  induction k with k ih generalizing x,
+  { -- Base case: k = 0
+    have h : f(x) ≤ 2 + 2*x, from
+      if hx : x ≥ 1 then h₁ x hx
+      else le_of_lt (lt_of_not_ge hx),
+    calc
+      f(x) ≤ 2 + 2*x : h
+      ... < 2*(1 + x) : by { rw mul_add, linarith }
+      ... = 2^(1/2^0) * (1 + x) : by ring },
+  { -- Inductive step
+    have ih' := ih (x + 1),
+    have hx : x + 1 ≥ 1, by linarith,
+    have h_fx : f(x) ≥ 1, from h₀ x hx,
+    have h_fx_sq : f(x)^2 ≥ 1, by { apply pow_le_pow_of_le_left; linarith },
+    have h_key : x * f(x + 1) + 1 = f(x)^2, by { rw h₂ x hx, ring },
+    calc
+      f(x) = sqrt (x * f(x + 1) + 1) : by { rw h_key, exact sqrt_sq (le_of_lt h_fx) }
+      ... < sqrt (x * (2^(1/2^k) * (2 + x)) + 1) : by {
+        apply sqrt_lt_sqrt,
+        rw mul_assoc,
+        apply add_lt_add_right,
+        apply mul_lt_mul_of_pos_left,
+        { exact ih' },
+        { exact lt_of_le_of_lt (zero_le_one) hx }
+      }
+      ... ≤ sqrt (2^(1/2^k) * (x * (2 + x) + 1)) : by {
+        apply sqrt_le_sqrt,
+        rw ← mul_add,
+        apply le_of_eq,
+        ring
+      }
+      ... = 2^(1/2^(k+1)) * sqrt (x * (2 + x) + 1) : by {
+        rw [← sqrt_mul, pow_div, pow_one, pow_add],
+        ring,
+        { apply le_of_lt, apply pow_pos, linarith },
+        { apply add_pos_of_pos_of_nonneg,
+          { apply mul_pos_of_pos_of_pos; linarith },
+          { exact zero_le_one } }
+      }
+      ... < 2^(1/2^(k+1)) * (1 + x) : by {
+        apply mul_lt_mul_of_pos_left,
+        { apply sqrt_lt,
+          { apply add_pos_of_pos_of_nonneg,
+            { apply mul_pos_of_pos_of_pos; linarith },
+            { exact zero_le_one } },
+          { calc
+              x * (2 + x) + 1 < (1 + x) * (1 + x) :end
+2024-07-01 08:20:46,447 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x, x ≥ 1 → f(x) ≥ 1)\n(h₁ : ∀ x, x ≥ 1 → f(x) ≤ 2 + 2 * x)\n(h₂ : ∀ x, x ≥ 1 → x * f(x + 1) = f(x)^2 - 1):\n∀ x : ℝ, ∀ k : ℕ, f(x) < 2^((1/2^k)) * (1 + x) :=\nbegin\n  intros x k,\n  induction k with k ih generalizing x,\n  { -- Base case: k = 0\n    have h : f(x) ≤ 2 + 2*x, from\n      if hx : x ≥ 1 then h₁ x hx\n      else le_of_lt (lt_of_not_ge hx),\n    calc\n      f(x) ≤ 2 + 2*x : h\n      ... < 2*(1 + x) : by { rw mul_add, linarith }\n      ... = 2^(1/2^0) * (1 + x) : by ring },\n  { -- Inductive step\n    have ih' := ih (x + 1),\n    have hx : x + 1 ≥ 1, by linarith,\n    have h_fx : f(x) ≥ 1, from h₀ x hx,\n    have h_fx_sq : f(x)^2 ≥ 1, by { apply pow_le_pow_of_le_left; linarith },\n    have h_key : x * f(x + 1) + 1 = f(x)^2, by { rw h₂ x hx, ring },\n    calc\n      f(x) = sqrt (x * f(x + 1) + 1) : by { rw h_key, exact sqrt_sq (le_of_lt h_fx) }\n      ... < sqrt (x * (2^(1/2^k) * (2 + x)) + 1) : by {\n        apply sqrt_lt_sqrt,\n        rw mul_assoc,\n        apply add_lt_add_right,\n        apply mul_lt_mul_of_pos_left,\n        { exact ih' },\n        { exact lt_of_le_of_lt (zero_le_one) hx }\n      }\n      ... ≤ sqrt (2^(1/2^k) * (x * (2 + x) + 1)) : by {\n        apply sqrt_le_sqrt,\n        rw ← mul_add,\n        apply le_of_eq,\n        ring\n      }\n      ... = 2^(1/2^(k+1)) * sqrt (x * (2 + x) + 1) : by {\n        rw [← sqrt_mul, pow_div, pow_one, pow_add],\n        ring,\n        { apply le_of_lt, apply pow_pos, linarith },\n        { apply add_pos_of_pos_of_nonneg,\n          { apply mul_pos_of_pos_of_pos; linarith },\n          { exact zero_le_one } }\n      }\n      ... < 2^(1/2^(k+1)) * (1 + x) : by {\n        apply mul_lt_mul_of_pos_left,\n        { apply sqrt_lt,\n          { apply add_pos_of_pos_of_nonneg,\n            { apply mul_pos_of_pos_of_pos; linarith },\n            { exact zero_le_one } },\n          { calc\n              x * (2 + x) + 1 < (1 + x) * (1 + x) :end"]})
+2024-07-01 08:20:52,238 - __main__ - INFO - Updating policy
+2024-07-01 08:20:52,238 - __main__ - INFO - Policy updated
+2024-07-01 08:20:52,238 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:20:52,238 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:20:52,238 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:20:52,238 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:20:52,238 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_8
+(f : ℝ → ℝ)
+(h₀ : ∀ x, x ≥ 1 → f(x) ≥ 1)
+(h₁ : ∀ x, x ≥ 1 → f(x) ≤ 2 + 2 * x)
+(h₂ : ∀ x, x ≥ 1 → x * f(x + 1) = f(x)^2 - 1):
+∀ x : ℝ, ∀ k : ℕ, f(x) < 2^((1/2^k)) * (1 + x) :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_8
+(f : ℝ → ℝ)
+(h₀ : ∀ x, x ≥ 1 → f(x) ≥ 1)
+(h₁ : ∀ x, x ≥ 1 → f(x) ≤ 2 + 2 * x)
+(h₂ : ∀ x, x ≥ 1 → x * f(x + 1) = f(x)^2 - 1):
+∀ x : ℝ, ∀ k : ℕ, f(x) < 2^((1/2^k)) * (1 + x) :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 23.62493371963501
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:20:52,257 - __main__ - INFO - Prover for lemma: intermediate_funeq_8 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:20:52,264 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_9
+2024-07-01 08:20:53,952 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_9 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:20:53,952 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_9 with timeout: 720 seconds
+2024-07-01 08:21:07,175 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:21:07,175 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:21:09,746 - __main__ - INFO - Requesting 1000 tokens to generate, 220 tokens in input.
+2024-07-01 08:21:09,746 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x^2 + y) = f(x^27 + 2 * y) + f(x^4)) :
+∀ x, f(x) = 0 :=
+
+[END]
+2024-07-01 08:21:20,388 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x^2 + y) = f(x^27 + 2 * y) + f(x^4)) :
+∀ x, f(x) = 0 :=
+begin
+  intro x,
+  have h1 : f(x) = f(0^2 + x), by rw [pow_two, zero_mul, zero_add],
+  have h2 : f(0^2 + x) = f(0^27 + 2*x) + f(0^4), from h 0 x,
+  have h3 : f(x) = f(2*x) + f(0), by {rw [←h1, h2, pow_zero, pow_zero, pow_zero, mul_zero, zero_add]},
+  have h4 : f(2*x) = f((√2)^2 + 2*x), by rw [pow_two, mul_self_sqrt, mul_two],
+  have h5 : f((√2)^2 + 2*x) = f((√2)^27 + 2*(2*x)) + f((√2)^4), from h (√2) (2*x),
+  have h6 : f(2*x) = f(8*x) + f(4), by {rw [h4, h5, pow_27, pow_four, mul_eight, mul_four]},
+  have h7 : f(x) = f(8*x) + f(4) + f(0), by rw [h3, h6],
+  have h8 : f(8*x) = f(x), 
+  { have : 8*x = (2^3)*x, by ring,
+    rw [this, ←mul_assoc, ←pow_three, h3, h6],
+    ring },
+  rw h8 at h7,
+  have h9 : f(x) - f(x) = f(4) + f(0), by linarith,
+  have h10 : 0 = f(4) + f(0), by exact h9,
+  have h11 : f(4) = 0,
+  { have : f(4) = f(2^2), by refl,
+    rw [this, h3, h6],
+    linarith },
+  have h12 : f(0) = 0, by linarith,
+  rw [←h3, h12, add_zero],
+  exact h11,
+end
+2024-07-01 08:21:20,388 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x y, f(x^2 + y) = f(x^27 + 2 * y) + f(x^4)) :\n∀ x, f(x) = 0 :=\nbegin\n  intro x,\n  have h1 : f(x) = f(0^2 + x), by rw [pow_two, zero_mul, zero_add],\n  have h2 : f(0^2 + x) = f(0^27 + 2*x) + f(0^4), from h 0 x,\n  have h3 : f(x) = f(2*x) + f(0), by {rw [←h1, h2, pow_zero, pow_zero, pow_zero, mul_zero, zero_add]},\n  have h4 : f(2*x) = f((√2)^2 + 2*x), by rw [pow_two, mul_self_sqrt, mul_two],\n  have h5 : f((√2)^2 + 2*x) = f((√2)^27 + 2*(2*x)) + f((√2)^4), from h (√2) (2*x),\n  have h6 : f(2*x) = f(8*x) + f(4), by {rw [h4, h5, pow_27, pow_four, mul_eight, mul_four]},\n  have h7 : f(x) = f(8*x) + f(4) + f(0), by rw [h3, h6],\n  have h8 : f(8*x) = f(x), \n  { have : 8*x = (2^3)*x, by ring,\n    rw [this, ←mul_assoc, ←pow_three, h3, h6],\n    ring },\n  rw h8 at h7,\n  have h9 : f(x) - f(x) = f(4) + f(0), by linarith,\n  have h10 : 0 = f(4) + f(0), by exact h9,\n  have h11 : f(4) = 0,\n  { have : f(4) = f(2^2), by refl,\n    rw [this, h3, h6],\n    linarith },\n  have h12 : f(0) = 0, by linarith,\n  rw [←h3, h12, add_zero],\n  exact h11,\nend']})
+2024-07-01 08:21:26,128 - __main__ - INFO - Updating policy
+2024-07-01 08:21:26,128 - __main__ - INFO - Policy updated
+2024-07-01 08:21:26,128 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:21:26,128 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:21:26,128 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:21:26,128 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:21:26,128 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_9
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x^2 + y) = f(x^27 + 2 * y) + f(x^4)) :
+∀ x, f(x) = 0 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_9
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x^2 + y) = f(x^27 + 2 * y) + f(x^4)) :
+∀ x, f(x) = 0 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 18.95436716079712
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:21:26,144 - __main__ - INFO - Prover for lemma: intermediate_funeq_9 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:21:26,150 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_10
+2024-07-01 08:21:27,989 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_10 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:21:27,989 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_10 with timeout: 720 seconds
+2024-07-01 08:21:41,639 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:21:41,640 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:21:44,057 - __main__ - INFO - Requesting 1000 tokens to generate, 231 tokens in input.
+2024-07-01 08:21:44,057 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y * f(x) + x * y) = 2 * x * y)
+(h₁ : ∀ x, f(f(x)) = x) :
+∀ x, f(x) = x :=
+
+[END]
+2024-07-01 08:21:50,874 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y * f(x) + x * y) = 2 * x * y)
+(h₁ : ∀ x, f(f(x)) = x) :
+∀ x, f(x) = x :=
+begin
+  intro x,
+  have key : f(x * f(x) + x * x) = 2 * x * x,
+  { exact h₀ x x },
+  have simplify : x * f(x) + x * x = x * (f(x) + x),
+  { ring },
+  rw simplify at key,
+  have factor : 2 * x * x = x * (x + x),
+  { ring },
+  rw factor at key,
+  have cancel : x * (f(x) + x) = x * (x + x),
+  { rw ← key },
+  have non_zero : x ≠ 0 ∨ x = 0,
+  { exact classical.em (x ≠ 0) },
+  cases non_zero with x_neq_zero x_eq_zero,
+  { have cancel_x : f(x) + x = x + x,
+    { exact (mul_left_inj' x_neq_zero).mp cancel },
+    have subtract : f(x) = x,
+    { linarith },
+    exact subtract },
+  { rw x_eq_zero,
+    have f_zero : f(0) = 0,
+    { have h : f(f(0)) = 0,
+      { rw h₁ },
+      exact h },
+    exact f_zero },
+end
+2024-07-01 08:21:50,875 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x y, f(y * f(x) + x * y) = 2 * x * y)\n(h₁ : ∀ x, f(f(x)) = x) :\n∀ x, f(x) = x :=\nbegin\n  intro x,\n  have key : f(x * f(x) + x * x) = 2 * x * x,\n  { exact h₀ x x },\n  have simplify : x * f(x) + x * x = x * (f(x) + x),\n  { ring },\n  rw simplify at key,\n  have factor : 2 * x * x = x * (x + x),\n  { ring },\n  rw factor at key,\n  have cancel : x * (f(x) + x) = x * (x + x),\n  { rw ← key },\n  have non_zero : x ≠ 0 ∨ x = 0,\n  { exact classical.em (x ≠ 0) },\n  cases non_zero with x_neq_zero x_eq_zero,\n  { have cancel_x : f(x) + x = x + x,\n    { exact (mul_left_inj' x_neq_zero).mp cancel },\n    have subtract : f(x) = x,\n    { linarith },\n    exact subtract },\n  { rw x_eq_zero,\n    have f_zero : f(0) = 0,\n    { have h : f(f(0)) = 0,\n      { rw h₁ },\n      exact h },\n    exact f_zero },\nend"]})
+2024-07-01 08:21:56,620 - __main__ - INFO - Updating policy
+2024-07-01 08:21:56,620 - __main__ - INFO - Policy updated
+2024-07-01 08:21:56,620 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:21:56,620 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:21:56,620 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:21:56,621 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:21:56,621 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_10
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y * f(x) + x * y) = 2 * x * y)
+(h₁ : ∀ x, f(f(x)) = x) :
+∀ x, f(x) = x :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_10
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y * f(x) + x * y) = 2 * x * y)
+(h₁ : ∀ x, f(f(x)) = x) :
+∀ x, f(x) = x :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 14.982142925262451
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:21:56,638 - __main__ - INFO - Prover for lemma: intermediate_funeq_10 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:21:56,645 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_11
+2024-07-01 08:21:58,288 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_11 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:21:58,289 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_11 with timeout: 720 seconds
+2024-07-01 08:22:11,884 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:22:11,885 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:22:14,288 - __main__ - INFO - Requesting 1000 tokens to generate, 217 tokens in input.
+2024-07-01 08:22:14,288 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x) :
+f(0) = 0 :=
+
+[END]
+2024-07-01 08:22:24,565 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x) :
+f(0) = 0 :=
+begin
+  -- Let's apply the hypothesis h with x = 0 and y = 0
+  have h1 : f(0 * f(0)^2 - f(f(0))) = 0^2 * f(0) - 0,
+    from h 0 0,
+  
+  -- Simplify the left side of the equation
+  have h2 : f(0 * f(0)^2 - f(f(0))) = f(-f(f(0))),
+    by simp,
+  
+  -- Simplify the right side of the equation
+  have h3 : 0^2 * f(0) - 0 = 0,
+    by simp,
+  
+  -- Combine h1, h2, and h3
+  have h4 : f(-f(f(0))) = 0,
+    by rw [←h2, h1, h3],
+  
+  -- Apply the hypothesis h again with x = -f(0) and y = 0
+  have h5 : f(-f(0) * f(0)^2 - f(f(-f(0)))) = 0^2 * f(-f(0)) - (-f(0)),
+    from h (-f(0)) 0,
+  
+  -- Simplify the left side of this new equation
+  have h6 : f(-f(0) * f(0)^2 - f(f(-f(0)))) = f(-f(0) * f(0)^2 - 0),
+    by rw h4,
+  
+  -- Simplify the right side
+  have h7 : 0^2 * f(-f(0)) - (-f(0)) = f(0),
+    by simp,
+  
+  -- Combine h5, h6, and h7
+  have h8 : f(-f(0) * f(0)^2) = f(0),
+    by rw [←h6, h5, h7],
+  
+  -- This implies that -f(0) * f(0)^2 = 0
+  have h9 : -f(0) * f(0)^2 = 0,
+    by rw ←h8,
+  
+  -- Factor out f(0)
+  have h10 : f(0) * (-f(0)) = 0,
+    by rw [←mul_assoc, sq, ←neg_mul] at h9; exact h9,
+  
+  -- This implies f(0) = 0 or -f(0) = 0
+  have h11 : f(0) = 0 ∨ -f(0) = 0,
+    from eq_zero_or_eq_zero_of_mul_eq_zero h10,
+  
+  -- In either case, f(0) = 0
+  cases h11,
+  { exact h11 },
+  { rw neg_eq_zero at h11,
+    exact h11 },
+end
+2024-07-01 08:22:24,565 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x) :\nf(0) = 0 :=\nbegin\n  -- Let's apply the hypothesis h with x = 0 and y = 0\n  have h1 : f(0 * f(0)^2 - f(f(0))) = 0^2 * f(0) - 0,\n    from h 0 0,\n  \n  -- Simplify the left side of the equation\n  have h2 : f(0 * f(0)^2 - f(f(0))) = f(-f(f(0))),\n    by simp,\n  \n  -- Simplify the right side of the equation\n  have h3 : 0^2 * f(0) - 0 = 0,\n    by simp,\n  \n  -- Combine h1, h2, and h3\n  have h4 : f(-f(f(0))) = 0,\n    by rw [←h2, h1, h3],\n  \n  -- Apply the hypothesis h again with x = -f(0) and y = 0\n  have h5 : f(-f(0) * f(0)^2 - f(f(-f(0)))) = 0^2 * f(-f(0)) - (-f(0)),\n    from h (-f(0)) 0,\n  \n  -- Simplify the left side of this new equation\n  have h6 : f(-f(0) * f(0)^2 - f(f(-f(0)))) = f(-f(0) * f(0)^2 - 0),\n    by rw h4,\n  \n  -- Simplify the right side\n  have h7 : 0^2 * f(-f(0)) - (-f(0)) = f(0),\n    by simp,\n  \n  -- Combine h5, h6, and h7\n  have h8 : f(-f(0) * f(0)^2) = f(0),\n    by rw [←h6, h5, h7],\n  \n  -- This implies that -f(0) * f(0)^2 = 0\n  have h9 : -f(0) * f(0)^2 = 0,\n    by rw ←h8,\n  \n  -- Factor out f(0)\n  have h10 : f(0) * (-f(0)) = 0,\n    by rw [←mul_assoc, sq, ←neg_mul] at h9; exact h9,\n  \n  -- This implies f(0) = 0 or -f(0) = 0\n  have h11 : f(0) = 0 ∨ -f(0) = 0,\n    from eq_zero_or_eq_zero_of_mul_eq_zero h10,\n  \n  -- In either case, f(0) = 0\n  cases h11,\n  { exact h11 },\n  { rw neg_eq_zero at h11,\n    exact h11 },\nend"]})
+2024-07-01 08:22:31,200 - __main__ - INFO - Updating policy
+2024-07-01 08:22:31,201 - __main__ - INFO - Policy updated
+2024-07-01 08:22:31,201 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:22:31,201 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:22:31,201 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:22:31,201 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:22:31,201 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_11
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x) :
+f(0) = 0 :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_11
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x) :
+f(0) = 0 :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 19.31683897972107
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:22:31,218 - __main__ - INFO - Prover for lemma: intermediate_funeq_11 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:22:31,225 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_12
+2024-07-01 08:22:33,210 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_12 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:22:33,210 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_12 with timeout: 720 seconds
+2024-07-01 08:22:47,301 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:22:47,301 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:22:49,711 - __main__ - INFO - Requesting 1000 tokens to generate, 241 tokens in input.
+2024-07-01 08:22:49,712 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x)
+(h₁ : f(0) = 0) :
+∀ x y, f(x) = f(y) → x = y:=
+
+[END]
+2024-07-01 08:22:59,940 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x)
+(h₁ : f(0) = 0) :
+∀ x y, f(x) = f(y) → x = y :=
+begin
+  intros x y hfxy,
+  have h₂ : f(x * f(y)^2 - f(f(x))) = f(y * f(x)^2 - f(f(y))),
+  { rw [h₀, h₀, hfxy] },
+  have h₃ : y^2 * f(x) - x = x^2 * f(y) - y,
+  { rw [←h₀, ←h₀, h₂] },
+  have h₄ : y^2 * f(x) - x^2 * f(y) = x - y,
+  { linarith },
+  have h₅ : (y^2 - x^2) * f(x) = x - y,
+  { rw [hfxy] at h₄,
+    linarith },
+  have h₆ : (y + x) * (y - x) * f(x) = x - y,
+  { rw [sq_sub_sq] at h₅,
+    exact h₅ },
+  have h₇ : (y + x) * (y - x) * f(x) + (x - y) = 0,
+  { linarith },
+  have h₈ : (y + x) * (y - x) * f(x) + (x - y) = (y - x) * (1 + (y + x) * f(x)),
+  { ring },
+  have h₉ : (y - x) * (1 + (y + x) * f(x)) = 0,
+  { rw [←h₈, h₇] },
+  have h₁₀ : y - x = 0 ∨ 1 + (y + x) * f(x) = 0,
+  { exact eq_zero_or_eq_zero_of_mul_eq_zero h₉ },
+  cases h₁₀,
+  { linarith },
+  { have h₁₁ : f(x) = -1 / (y + x),
+    { field_simp [h₁₀] },
+    have h₁₂ : x = 0,
+    { have : f(0) = f(x),
+      { rw [h₁, h₁₁],
+        field_simp,
+        ring },
+      rwa [hfxy] at this },
+    have h₁₃ : y = 0,
+    { rw [←h₁₂, hfxy, h₁₂] },
+    rw [h₁₂, h₁₃] }
+end
+2024-07-01 08:22:59,941 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x)\n(h₁ : f(0) = 0) :\n∀ x y, f(x) = f(y) → x = y :=\nbegin\n  intros x y hfxy,\n  have h₂ : f(x * f(y)^2 - f(f(x))) = f(y * f(x)^2 - f(f(y))),\n  { rw [h₀, h₀, hfxy] },\n  have h₃ : y^2 * f(x) - x = x^2 * f(y) - y,\n  { rw [←h₀, ←h₀, h₂] },\n  have h₄ : y^2 * f(x) - x^2 * f(y) = x - y,\n  { linarith },\n  have h₅ : (y^2 - x^2) * f(x) = x - y,\n  { rw [hfxy] at h₄,\n    linarith },\n  have h₆ : (y + x) * (y - x) * f(x) = x - y,\n  { rw [sq_sub_sq] at h₅,\n    exact h₅ },\n  have h₇ : (y + x) * (y - x) * f(x) + (x - y) = 0,\n  { linarith },\n  have h₈ : (y + x) * (y - x) * f(x) + (x - y) = (y - x) * (1 + (y + x) * f(x)),\n  { ring },\n  have h₉ : (y - x) * (1 + (y + x) * f(x)) = 0,\n  { rw [←h₈, h₇] },\n  have h₁₀ : y - x = 0 ∨ 1 + (y + x) * f(x) = 0,\n  { exact eq_zero_or_eq_zero_of_mul_eq_zero h₉ },\n  cases h₁₀,\n  { linarith },\n  { have h₁₁ : f(x) = -1 / (y + x),\n    { field_simp [h₁₀] },\n    have h₁₂ : x = 0,\n    { have : f(0) = f(x),\n      { rw [h₁, h₁₁],\n        field_simp,\n        ring },\n      rwa [hfxy] at this },\n    have h₁₃ : y = 0,\n    { rw [←h₁₂, hfxy, h₁₂] },\n    rw [h₁₂, h₁₃] }\nend']})
+2024-07-01 08:23:06,031 - __main__ - INFO - Updating policy
+2024-07-01 08:23:06,032 - __main__ - INFO - Policy updated
+2024-07-01 08:23:06,032 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:23:06,032 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:23:06,032 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:23:06,032 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:23:06,032 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_12
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x)
+(h₁ : f(0) = 0) :
+∀ x y, f(x) = f(y) → x = y:=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_12
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x)
+(h₁ : f(0) = 0) :
+∀ x y, f(x) = f(y) → x = y:=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 18.731915950775146
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:23:06,074 - __main__ - INFO - Prover for lemma: intermediate_funeq_12 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:23:06,082 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_13
+2024-07-01 08:23:07,885 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_13 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:23:07,886 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_13 with timeout: 720 seconds
+2024-07-01 08:23:21,197 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:23:21,197 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:23:23,407 - __main__ - INFO - Requesting 1000 tokens to generate, 228 tokens in input.
+2024-07-01 08:23:23,408 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x):
+∀ x : ℝ, ∃ a : ℝ, f(a) = x :=
+
+[END]
+2024-07-01 08:23:26,649 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x):
+∀ x : ℝ, ∃ a : ℝ, f(a) = x :=
+begin
+  intro x,
+  let a := x * f(0)^2 - f(f(x)),
+  use a,
+  have key := h x 0,
+  rw ← key,
+  congr,
+  ring,
+end
+2024-07-01 08:23:26,650 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x):\n∀ x : ℝ, ∃ a : ℝ, f(a) = x :=\nbegin\n  intro x,\n  let a := x * f(0)^2 - f(f(x)),\n  use a,\n  have key := h x 0,\n  rw ← key,\n  congr,\n  ring,\nend']})
+2024-07-01 08:23:31,778 - __main__ - INFO - Updating policy
+2024-07-01 08:23:31,779 - __main__ - INFO - Policy updated
+2024-07-01 08:23:31,779 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:23:31,779 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:23:31,779 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:23:31,779 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:23:31,779 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_13
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x):
+∀ x : ℝ, ∃ a : ℝ, f(a) = x :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_13
+(f : ℝ → ℝ)
+(h : ∀ x y, f(x * f(y)^2 - f(f(x))) = y^2 * f(x) - x):
+∀ x : ℝ, ∃ a : ℝ, f(a) = x :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 10.582926273345947
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:23:31,798 - __main__ - INFO - Prover for lemma: intermediate_funeq_13 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:23:31,806 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_14
+2024-07-01 08:23:33,695 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_14 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:23:33,696 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_14 with timeout: 720 seconds
+2024-07-01 08:23:46,814 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:23:46,814 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:23:49,007 - __main__ - INFO - Requesting 1000 tokens to generate, 232 tokens in input.
+2024-07-01 08:23:49,008 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))
+(h₁ : f(1) ≠ 0) :
+∀ x y, f(x) = f(y) → x = y:=
+
+[END]
+2024-07-01 08:23:54,512 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))
+(h₁ : f(1) ≠ 0) :
+∀ x y, f(x) = f(y) → x = y :=
+begin
+  intros x y hxy,
+  have key : ∀ z, f(z^2 * f(1)) = z * f(z),
+  { intro z,
+    specialize h₀ 1 z,
+    rw mul_one at h₀,
+    exact h₀ },
+  
+  have h_x : f(x^2 * f(1)) = x * f(x),
+  { exact key x },
+  
+  have h_y : f(y^2 * f(1)) = y * f(y),
+  { exact key y },
+  
+  rw hxy at h_x,
+  
+  have eq_mul : x * f(x) = y * f(y),
+  { rw [←h_x, ←h_y] },
+  
+  have neq_zero : f(x) ≠ 0,
+  { intro h_contra,
+    rw h_contra at hxy,
+    exact h₁ hxy },
+  
+  exact (mul_left_inj' neq_zero).mp eq_mul
+end
+2024-07-01 08:23:54,512 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ["theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))\n(h₁ : f(1) ≠ 0) :\n∀ x y, f(x) = f(y) → x = y :=\nbegin\n  intros x y hxy,\n  have key : ∀ z, f(z^2 * f(1)) = z * f(z),\n  { intro z,\n    specialize h₀ 1 z,\n    rw mul_one at h₀,\n    exact h₀ },\n  \n  have h_x : f(x^2 * f(1)) = x * f(x),\n  { exact key x },\n  \n  have h_y : f(y^2 * f(1)) = y * f(y),\n  { exact key y },\n  \n  rw hxy at h_x,\n  \n  have eq_mul : x * f(x) = y * f(y),\n  { rw [←h_x, ←h_y] },\n  \n  have neq_zero : f(x) ≠ 0,\n  { intro h_contra,\n    rw h_contra at hxy,\n    exact h₁ hxy },\n  \n  exact (mul_left_inj' neq_zero).mp eq_mul\nend"]})
+2024-07-01 08:24:00,042 - __main__ - INFO - Updating policy
+2024-07-01 08:24:00,042 - __main__ - INFO - Policy updated
+2024-07-01 08:24:00,042 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:24:00,042 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:24:00,042 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:24:00,042 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:24:00,042 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_14
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))
+(h₁ : f(1) ≠ 0) :
+∀ x y, f(x) = f(y) → x = y:=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_14
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))
+(h₁ : f(1) ≠ 0) :
+∀ x y, f(x) = f(y) → x = y:=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 13.228802680969238
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:24:00,062 - __main__ - INFO - Prover for lemma: intermediate_funeq_14 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:24:00,070 - __main__ - INFO - Attempting to prove lemma: intermediate_funeq_15
+2024-07-01 08:24:01,706 - __main__ - INFO - Attempt 1 for proving lemma: intermediate_funeq_15 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:01,706 - __main__ - INFO - Running the prover agent for lemma: intermediate_funeq_15 with timeout: 720 seconds
+2024-07-01 08:24:14,617 - __main__ - INFO - Step 0/4 (Actual steps: 0)
+2024-07-01 08:24:14,618 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:24:16,579 - __main__ - INFO - Requesting 1000 tokens to generate, 247 tokens in input.
+2024-07-01 08:24:16,579 - __main__ - INFO - Prompt Message:
+[THEOREM]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))
+(h₁ : f(1) ≠ 0)
+(h₂ : ∀ x y, f(x) = f(y) → x = y):
+∀ x, f(x) = x :=
+
+[END]
+2024-07-01 08:24:22,020 - __main__ - INFO - Chosen message: 
+
+[PROOF]
+theorem some_theorem
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))
+(h₁ : f(1) ≠ 0)
+(h₂ : ∀ x y, f(x) = f(y) → x = y):
+∀ x, f(x) = x :=
+begin
+  intro x,
+  have key : f(f(x)^2 * f(1)) = x * f(x) * f(1),
+  { exact h₀ x 1 },
+  have h3 : f(x) * f(1) = x * f(1),
+  { rw ← key,
+    rw h₀,
+    ring },
+  have h4 : f(x) = x,
+  { apply h₂,
+    exact calc
+      f(x) = f(x) * f(1) / f(1) : by field_simp [h₁]
+      ...   = x * f(1) / f(1)   : by rw h3
+      ...   = x                 : by field_simp [h₁] },
+  exact h4,
+end
+2024-07-01 08:24:22,020 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.RUN_TACTIC: 'RUN_TACTIC'>, language=<Language.LEAN: 'LEAN'>, kwargs={'tactics': ['theorem some_theorem\n(f : ℝ → ℝ)\n(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))\n(h₁ : f(1) ≠ 0)\n(h₂ : ∀ x y, f(x) = f(y) → x = y):\n∀ x, f(x) = x :=\nbegin\n  intro x,\n  have key : f(f(x)^2 * f(1)) = x * f(x) * f(1),\n  { exact h₀ x 1 },\n  have h3 : f(x) * f(1) = x * f(1),\n  { rw ← key,\n    rw h₀,\n    ring },\n  have h4 : f(x) = x,\n  { apply h₂,\n    exact calc\n      f(x) = f(x) * f(1) / f(1) : by field_simp [h₁]\n      ...   = x * f(1) / f(1)   : by rw h3\n      ...   = x                 : by field_simp [h₁] },\n  exact h4,\nend']})
+2024-07-01 08:24:27,701 - __main__ - INFO - Updating policy
+2024-07-01 08:24:27,701 - __main__ - INFO - Policy updated
+2024-07-01 08:24:27,701 - __main__ - INFO - Step 1/4 (Actual steps: 1)
+2024-07-01 08:24:27,701 - __main__ - INFO - Asking policy for next action
+2024-07-01 08:24:27,702 - __main__ - INFO - Got Action: ProofAction(action_type=<ActionType.EXIT: 'EXIT'>, language=<Language.LEAN: 'LEAN'>, kwargs={})
+2024-07-01 08:24:27,702 - __main__ - WARNING - Got EXIT action, exiting
+2024-07-01 08:24:27,702 - __main__ - INFO - Dumping proof search result:
+theorem intermediate_funeq_15
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))
+(h₁ : f(1) ≠ 0)
+(h₂ : ∀ x y, f(x) = f(y) → x = y):
+∀ x, f(x) = x :=
+begin
+    
+
+
+ProofFile: None
+LemmaName: theorem intermediate_funeq_15
+(f : ℝ → ℝ)
+(h₀ : ∀ x y, f(y^2 * f(x)) = x * y * f(y))
+(h₁ : f(1) ≠ 0)
+(h₂ : ∀ x y, f(x) = f(y) → x = y):
+∀ x, f(x) = x :=
+SearchResult: [FAILED]
+IsInferenceExhausted: False
+IsTimeout: False
+LongestSuccessPath: -1 
+StepsUsed: 1
+SearchTimeInSecs: 13.084825992584229
+NumberOfBacktracks: 0
+PossibleFailedPaths: -1
+AdditionalInfo: {'queries': 1}
+
+
+2024-07-01 08:24:27,717 - __main__ - INFO - Prover for lemma: intermediate_funeq_15 in file data/benchmarks/FunEq/src/dataset.lean completed.
+2024-07-01 08:24:27,736 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_1 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,736 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_2 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,736 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_3 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,736 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_4 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,736 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_5 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,736 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_6 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,736 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_7 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_8 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_9 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_10 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_11 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_12 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_13 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_14 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Proof not found for lemma: intermediate_funeq_15 in file data/benchmarks/FunEq/src/dataset.lean
+2024-07-01 08:24:27,737 - __main__ - INFO - Success rate: 0/15 = 0.0 for benchmark: intermediate_funeq
+2024-07-01 08:24:27,738 - __main__ - INFO - Finished running experiment: 
+{
+    "env_settings": {
+        "name": "bm25_retrieval",
+        "retrieval_strategy": "BM25"
+    },
+    "prompt_settings": {
+        "name": "lean_few_shot",
+        "main_prompt": "data/prompts/baseline/simple-prompt-lean.md",
+        "conv_prompt": "data/prompts/baseline/simple-prompt-conv-lean.md",
+        "informal_proof_repo": null
+    },
+    "eval_settings": {
+        "name": "n_4_few_claude",
+        "use_hammer": "ALLOW",
+        "setting_type": "Agent",
+        "max_proof_depth": 100,
+        "timeout_in_secs": 60,
+        "proof_retries": 1,
+        "max_tokens_per_action": 1000,
+        "max_theorems_in_prompt": 7,
+        "gpt_model_name": "claude-3-5-sonnet-20240620",
+        "max_number_of_episodes": 1,
+        "max_steps_per_episode": 4,
+        "render": false,
+        "checkpoint_dir": ".log/checkpoints/intermediate_funeq/n_4_few_claude/lean_few_shot",
+        "should_checkpoint": false,
+        "temperature": 0.0,
+        "max_history_messages": 0,
+        "policy_name": "FewShot",
+        "proof_dump_dir": ".log/proofs/eval_driver/few_shot/gpt4_turbo/intermediate_funeq/20240701-081630",
+        "use_human_readable_proof_context": true,
+        "sample": 1.0,
+        "sample_seed": 3840,
+        "use_example_retrieval": false,
+        "always_use_useful_theorem_retrieval": false,
+        "num_goal_per_prompt": null
+    },
+    "benchmark": {
+        "name": "intermediate_funeq",
+        "num_files": 1,
+        "language": "LEAN",
+        "datasets": [
+            {
+                "project": "data/benchmarks/FunEq",
+                "files": [
+                    {
+                        "path": "src/dataset.lean",
+                        "theorems": [
+                            "intermediate_funeq_1",
+                            "intermediate_funeq_2",
+                            "intermediate_funeq_3",
+                            "intermediate_funeq_4",
+                            "intermediate_funeq_5",
+                            "intermediate_funeq_6",
+                            "intermediate_funeq_7",
+                            "intermediate_funeq_8",
+                            "intermediate_funeq_9",
+                            "intermediate_funeq_10",
+                            "intermediate_funeq_11",
+                            "intermediate_funeq_12",
+                            "intermediate_funeq_13",
+                            "intermediate_funeq_14",
+                            "intermediate_funeq_15"
+                        ],
+                        "max_retry_attempts_limits": {},
+                        "max_time_limits_in_secs": {}
+                    }
+                ]
+            }
+        ],
+        "few_shot_data_path_for_retrieval": null,
+        "few_shot_metadata_filename_for_retrieval": null,
+        "dfs_data_path_for_retrieval": null,
+        "dfs_metadata_filename_for_retrieval": null,
+        "timeout_per_theorem_in_secs": 720
+    }
+}
