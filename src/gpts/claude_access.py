@@ -17,8 +17,8 @@ class ClaudeAccess(object):
         },
         # Add more Gemini models here as needed
     }
-    def __init__(self, api_key_file: str = ".secrets/claude_key2.json", model_name: str = "claude-pro"):
-        with open(".secrets/gemini_key.json", "r") as f:
+    def __init__(self, api_key_file: str = ".secrets/claude_key.json", model_name: str = "claude-pro"):
+        with open(".secrets/google_key.json", "r") as f:
             gem_api_key = json.load(f)["api_key"]
         genai.configure(api_key=gem_api_key)
         with open(api_key_file, "r") as f:

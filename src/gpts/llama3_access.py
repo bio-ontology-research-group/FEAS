@@ -17,7 +17,7 @@ class Llama3Access(object):
         # Add more Gemini models here as needed
     }
     def __init__(self, api_key_file: str = ".secrets/llama_key.json", model_name: str = "llama3"):
-        with open(".secrets/gemini_key.json", "r") as f:
+        with open(".secrets/google_key.json", "r") as f:
             gem_api_key = json.load(f)["api_key"]
         genai.configure(api_key=gem_api_key)
         with open(api_key_file, "r") as f:

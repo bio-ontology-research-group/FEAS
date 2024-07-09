@@ -15,7 +15,7 @@ class GeminiAccess(object):
         },
         # Add more Gemini models here as needed
     }
-    def __init__(self, api_key_file: str = ".secrets/gemini_key.json", model_name: str = "gemini-pro"):
+    def __init__(self, api_key_file: str = ".secrets/google_key.json", model_name: str = "gemini-pro"):
         with open(api_key_file, "r") as f:
             api_key = json.load(f)["api_key"]
         genai.configure(api_key=api_key)
