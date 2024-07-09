@@ -1,6 +1,6 @@
 # FEAS
 FEAS is an automated theorem proving (ATP) agent specifically designed for solving functional equation problems within the Lean theorem prover environment. It builds upon the foundational work of the COPRA project (https://github.com/trishullab/copra) but is tailored exclusively for Lean, focusing on specialized techniques relevant to this domain.
-
+The results of FEAS experiments can be found in the directory `results/`.
 ## Setup Instructions
 The setup for FEAS follows the same procedure as the COPRA project, tailored for Lean. Below are the relevant setup steps from the COPRA README, adapted for FEAS:
 
